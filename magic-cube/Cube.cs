@@ -37,7 +37,7 @@ namespace magic_cube {
     /// </summary>
     public class Cube {
         private Point3D origin;
-        private int size;
+        private double edge_len;
 
         public Model3DGroup group { get; private set;}
 
@@ -48,16 +48,16 @@ namespace magic_cube {
         /// Cube constructor
         /// </summary>
         /// <param name="o">The origin of the cube, this will always be the far-lower-left corner</param>
-        /// <param name="size">The length of the edge</param>
+        /// <param name="len">The length of the edge</param>
         /// <param name="f">This parameter allows the use of different materials on the cube's faces</param>
         /// <param name="defaultMaterial">The material to be applied on the faces 
         /// that are not included in the previous parameter.
         /// This defaults to a solid black diffuse material
         /// </param>
-        public Cube(Point3D o, int size, Dictionary<CubeFace, Material> f, Material defaultMaterial=null) {
+        public Cube(Point3D o, double len, Dictionary<CubeFace, Material> f, Material defaultMaterial=null) {
             this.group = new Model3DGroup();
             this.origin = o;
-            this.size = size;
+            this.edge_len = len;
             this.faces = f;
 
             if(defaultMaterial != null){
@@ -106,20 +106,20 @@ namespace magic_cube {
                      * 1-------2/
                      */
                     p0.X = origin.X;
-                    p0.Y = origin.Y + size;
-                    p0.Z = origin.Z + size;
+                    p0.Y = origin.Y + edge_len;
+                    p0.Z = origin.Z + edge_len;
 
                     p1.X = origin.X;
                     p1.Y = origin.Y;
-                    p1.Z = origin.Z + size;
+                    p1.Z = origin.Z + edge_len;
 
-                    p2.X = origin.X + size;
+                    p2.X = origin.X + edge_len;
                     p2.Y = origin.Y;
-                    p2.Z = origin.Z + size;
+                    p2.Z = origin.Z + edge_len;
 
-                    p3.X = origin.X + size;
-                    p3.Y = origin.Y + size;
-                    p3.Z = origin.Z + size;
+                    p3.X = origin.X + edge_len;
+                    p3.Y = origin.Y + edge_len;
+                    p3.Z = origin.Z + edge_len;
                     break;
                 case CubeFace.R:
                     /**
@@ -129,20 +129,20 @@ namespace magic_cube {
                      * |       | 2
                      * |-------1/
                      */
-                    p0.X = origin.X + size;
-                    p0.Y = origin.Y + size;
-                    p0.Z = origin.Z + size;
+                    p0.X = origin.X + edge_len;
+                    p0.Y = origin.Y + edge_len;
+                    p0.Z = origin.Z + edge_len;
 
-                    p1.X = origin.X + size;
+                    p1.X = origin.X + edge_len;
                     p1.Y = origin.Y;
-                    p1.Z = origin.Z + size;
+                    p1.Z = origin.Z + edge_len;
                                         
-                    p2.X = origin.X + size;
+                    p2.X = origin.X + edge_len;
                     p2.Y = origin.Y;
                     p2.Z = origin.Z;
                     
-                    p3.X = origin.X + size;
-                    p3.Y = origin.Y + size;
+                    p3.X = origin.X + edge_len;
+                    p3.Y = origin.Y + edge_len;
                     p3.Z = origin.Z;
                     break;
                 case CubeFace.B:
@@ -153,18 +153,18 @@ namespace magic_cube {
                      * | 2 ----|-1
                      * |-------|/
                      */                    
-                    p0.X = origin.X + size;
-                    p0.Y = origin.Y + size;
+                    p0.X = origin.X + edge_len;
+                    p0.Y = origin.Y + edge_len;
                     p0.Z = origin.Z; 
 
-                    p1.X = origin.X + size;
+                    p1.X = origin.X + edge_len;
                     p1.Y = origin.Y;
                     p1.Z = origin.Z;
 
                     p2 = origin;
 
                     p3.X = origin.X;
-                    p3.Y = origin.Y + size;
+                    p3.Y = origin.Y + edge_len;
                     p3.Z = origin.Z;
                     break;
                 case CubeFace.L:
@@ -176,18 +176,18 @@ namespace magic_cube {
                      * 2-------|/
                      */                    
                     p0.X = origin.X;
-                    p0.Y = origin.Y + size;
+                    p0.Y = origin.Y + edge_len;
                     p0.Z = origin.Z;
 
                     p1 = origin;
 
                     p2.X = origin.X;
                     p2.Y = origin.Y;
-                    p2.Z = origin.Z + size;
+                    p2.Z = origin.Z + edge_len;
 
                     p3.X = origin.X;
-                    p3.Y = origin.Y + size;
-                    p3.Z = origin.Z + size;
+                    p3.Y = origin.Y + edge_len;
+                    p3.Z = origin.Z + edge_len;
                     break;
                 case CubeFace.U:
                     /**
@@ -198,19 +198,19 @@ namespace magic_cube {
                      * |-------|/
                      */       
                     p0.X = origin.X;
-                    p0.Y = origin.Y + size;
+                    p0.Y = origin.Y + edge_len;
                     p0.Z = origin.Z;  
                  
                     p1.X = origin.X;
-                    p1.Y = origin.Y + size;
-                    p1.Z = origin.Z + size;
+                    p1.Y = origin.Y + edge_len;
+                    p1.Z = origin.Z + edge_len;
 
-                    p2.X = origin.X + size;
-                    p2.Y = origin.Y + size;
-                    p2.Z = origin.Z + size;
+                    p2.X = origin.X + edge_len;
+                    p2.Y = origin.Y + edge_len;
+                    p2.Z = origin.Z + edge_len;
                     
-                    p3.X = origin.X + size;
-                    p3.Y = origin.Y + size;
+                    p3.X = origin.X + edge_len;
+                    p3.Y = origin.Y + edge_len;
                     p3.Z = origin.Z;
                     break;
                 case CubeFace.D:
@@ -223,17 +223,17 @@ namespace magic_cube {
                      */
                     p0 = origin;
                     
-                    p1.X = origin.X + size;
+                    p1.X = origin.X + edge_len;
                     p1.Y = origin.Y;
                     p1.Z = origin.Z;
                     
-                    p2.X = origin.X + size;
+                    p2.X = origin.X + edge_len;
                     p2.Y = origin.Y;
-                    p2.Z = origin.Z + size;
+                    p2.Z = origin.Z + edge_len;
 
                     p3.X = origin.X;
                     p3.Y = origin.Y;
-                    p3.Z = origin.Z + size;
+                    p3.Z = origin.Z + edge_len;
                     break;
             }
 
