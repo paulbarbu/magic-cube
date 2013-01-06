@@ -39,7 +39,7 @@ namespace magic_cube {
         private Point3D origin;
         private double edge_len;
 
-        public Model3DGroup group { get; private set;}
+        public Model3DGroup group { get; protected set; }
 
         private Material defaultMaterial = new DiffuseMaterial(new SolidColorBrush(Colors.Black));
         private Dictionary<CubeFace, Material> faces;
@@ -66,6 +66,8 @@ namespace magic_cube {
 
             createCube();
         }
+
+        protected Cube() { }
         
         /// <summary>
         /// Creates the cube by creating it's 6 faces
@@ -73,7 +75,7 @@ namespace magic_cube {
         /// then each face will get the corespondent Material, 
         /// otherwise <see cref="defaultMaterial"/> will be used
         /// </summary>
-        private void createCube(){
+        protected virtual void createCube(){
             Material material;
 
             foreach (var face in Enum.GetValues(typeof(CubeFace)).Cast<CubeFace>()){
