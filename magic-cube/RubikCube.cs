@@ -34,18 +34,24 @@ namespace magic_cube {
             createCube();
         }
 
-        protected override void createCube(){
+        protected override void createCube() {
             Cube c;
+            Dictionary<CubeFace, Material> colors;
+
+            double x_offset, y_offset, z_offset;
 
             for (int y = 0; y < size; y++) {
                 for (int z = 0; z < size; z++) {
                     for (int x = 0; x < size; x++) {
-                        c = new Cube(new Point3D(origin.X + (edge_len + space) * x, origin.Y + (edge_len + space) * y, origin.Z + (edge_len + space) * z), edge_len, new Dictionary<CubeFace, Material>() {
-                            {CubeFace.F, new DiffuseMaterial(new SolidColorBrush(Colors.White))},
-                            {CubeFace.R, new DiffuseMaterial(new SolidColorBrush(Colors.Blue))},
-                            {CubeFace.U, new DiffuseMaterial(new SolidColorBrush(Colors.Yellow))},
-                        });
+                        x_offset = (edge_len + space) * x;
+                        y_offset = (edge_len + space) * y;
+                        z_offset = (edge_len + space) * z;
 
+                        Point3D p = new Point3D(origin.X + x_offset, origin.Y + y_offset, origin.Z + z_offset);
+
+                        colors = setFaceColors(x, y, z);
+
+                        c = new Cube(p, edge_len, colors);
                         group.Children.Add(c.group);
                     }
                 }
