@@ -7,6 +7,14 @@ using System.Windows.Media;
 
 namespace magic_cube {
     public static class Helpers {
+        /// <summary>
+        /// Create a triangle which can be used for more complex models
+        /// </summary>
+        /// <param name="p0">The first position of the mesh</param>
+        /// <param name="p1">The second position of the mesh</param>
+        /// <param name="p2">The third position of the mesh</param>
+        /// <param name="m">A <see cref="Material"/> to be applied to the triangle</param>
+        /// <returns><see cref="GeometryModel3D"/></returns>
         public static GeometryModel3D createTriangleModel(Point3D p0, Point3D p1, Point3D p2, Material m) {
             MeshGeometry3D triangleMesh = new MeshGeometry3D();
             triangleMesh.Positions.Add(p0);
@@ -25,6 +33,13 @@ namespace magic_cube {
             return new GeometryModel3D(triangleMesh, m);
         }
 
+        /// <summary>
+        /// Calculate the normal of a plane
+        /// </summary>
+        /// <param name="p0">The first point of the plane</param>
+        /// <param name="p1">The second point of the plane</param>
+        /// <param name="p2">The third point of the plane</param>
+        /// <returns><see cref="Vector3D"/> representing the plane's normal</returns>
         private static Vector3D calculateNormal(Point3D p0, Point3D p1, Point3D p2) {
             Vector3D v1 = new Vector3D(p1.X - p0.X, p1.Y - p0.Y, p1.Z - p0.Z);
             Vector3D v2 = new Vector3D(p2.X - p1.X, p2.Y - p1.Y, p2.Z - p1.Z);
