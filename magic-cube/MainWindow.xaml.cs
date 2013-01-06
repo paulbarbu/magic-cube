@@ -24,22 +24,31 @@ namespace magic_cube {
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
-            Cube c1 = new Cube(new Point3D(5, 5, 5), 1, null, new DiffuseMaterial(new SolidColorBrush(Colors.Black)));
-            
-            Cube c = new Cube(new Point3D(0, 0, 0), 5, new Dictionary<CubeFace, Material>() {
-                {CubeFace.F, new DiffuseMaterial(new SolidColorBrush(Colors.White))},
-                {CubeFace.R, new DiffuseMaterial(new SolidColorBrush(Colors.Blue))},
-                {CubeFace.U, new DiffuseMaterial(new SolidColorBrush(Colors.Yellow))},
-            });
+            int edge_len = 1;
+            int size = 5; // the cube will be size x size x size
+            double space = 0.1; //space between the cubes forming the bigger cube
 
-            ModelVisual3D model = new ModelVisual3D();
-            model.Content = c.group;
-            this.mainViewport.Children.Add(model);
+            Cube c;
+            ModelVisual3D m;
 
+            Point3D o = new Point3D();
+            o.X = o.Y = o.Z = 0;
 
-            ModelVisual3D model1 = new ModelVisual3D();
-            model1.Content = c1.group;
-            this.mainViewport.Children.Add(model1);
+            for(int y = 0; y<size; y++){
+                for (int z = 0; z < size; z++) {
+                    for (int x = 0; x < size; x++) {
+                        c = new Cube(new Point3D(o.X + (edge_len + space) * x, o.Y + (edge_len + space) * y, o.Z + (edge_len + space) * z), edge_len, new Dictionary<CubeFace, Material>() {
+                            {CubeFace.F, new DiffuseMaterial(new SolidColorBrush(Colors.White))},
+                            {CubeFace.R, new DiffuseMaterial(new SolidColorBrush(Colors.Blue))},
+                            {CubeFace.U, new DiffuseMaterial(new SolidColorBrush(Colors.Yellow))},
+                        });
+
+                        m = new ModelVisual3D();
+                        m.Content = c.group;
+                        this.mainViewport.Children.Add(m);
+                    }
+                }
+            }
         }
     }
 }
