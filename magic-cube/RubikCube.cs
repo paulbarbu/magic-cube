@@ -51,5 +51,35 @@ namespace magic_cube {
                 }
             }
         }
+
+        private Dictionary<CubeFace, Material> setFaceColors(int x, int y, int z){
+            Dictionary<CubeFace, Material> colors = new Dictionary<CubeFace,Material>();
+
+            if (x == 0) {
+                colors.Add(CubeFace.L, new DiffuseMaterial(new SolidColorBrush(Colors.Red)));
+            }
+
+            if (y == 0) {
+                colors.Add(CubeFace.D, new DiffuseMaterial(new SolidColorBrush(Colors.Yellow)));
+            }
+
+            if (z == 0) {
+                colors.Add(CubeFace.B, new DiffuseMaterial(new SolidColorBrush(Colors.Green)));
+            }
+
+            if (x == size-1) {
+                colors.Add(CubeFace.R, new DiffuseMaterial(new SolidColorBrush(Colors.Orange)));
+            }
+
+            if (y == size - 1) {
+                colors.Add(CubeFace.U, new DiffuseMaterial(new SolidColorBrush(Colors.White)));
+            }
+
+            if (z == size - 1) {
+                colors.Add(CubeFace.F, new DiffuseMaterial(new SolidColorBrush(Colors.Blue)));
+            }
+
+            return colors;
+        }
     }
 }
