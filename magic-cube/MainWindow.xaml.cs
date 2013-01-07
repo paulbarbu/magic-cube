@@ -23,8 +23,8 @@ namespace magic_cube {
             InitializeComponent();
         }
 
-        Point start;
-        bool moveCamera = false;
+        Point startMoveCamera;
+        bool allowMoveCamera = false, allowMoveLayer = false;
         Transform3DGroup rotations;
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
@@ -55,30 +55,34 @@ namespace magic_cube {
         
 
         private void Window_MouseRightButtonDown(object sender, MouseButtonEventArgs e) {
-            start = e.GetPosition(this);
-            moveCamera = true;
+            startMoveCamera = e.GetPosition(this);
+            allowMoveCamera = true;
             this.Cursor = Cursors.SizeAll;
 
             Debug.Print("DOWN");
         }
 
         private void Window_MouseRightButtonUp(object sender, MouseButtonEventArgs e) {
-            moveCamera = false;
+            allowMoveCamera = false;
             this.Cursor = Cursors.Arrow;
             Debug.Print("UP");
         }
 
         private void Window_MouseMove(object sender, MouseEventArgs e) {
-            if (!moveCamera) {
-                return;
+            if (allowMoveCamera) {
+                moveCamera(e.GetPosition(this));                
             }
 
-            Point p = e.GetPosition(this);
+            if(allowMoveLayer){
+                moveLayer(e.GetPosition((UIElement)sender));
+            }
+        }
 
-            double distX = p.X - start.X;
-            double distY = p.Y - start.Y;
+        private void moveCamera(Point p) {
+            double distX = p.X - startMoveCamera.X;
+            double distY = p.Y - startMoveCamera.Y;
 
-            start = p;
+            startMoveCamera = p;
 
             RotateTransform3D rotationX = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(1, 0, 0), distY), new Point3D(0, 0, 0));
             RotateTransform3D rotationY = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 1, 0), distX), new Point3D(0, 0, 0));
@@ -86,5 +90,31 @@ namespace magic_cube {
             rotations.Children.Add(rotationX);
             rotations.Children.Add(rotationY);
         }
+
+        private void moveLayer(Point p) {
+            RayMeshGeometry3DHitTestResult r = (RayMeshGeometry3DHitTestResult)VisualTreeHelper.HitTest(this.mainViewport, p);
+
+            if (r == null) {
+                return;
+            }
+
+            //TODO: ignore black sides 
+            MeshGeometry3D m = r.MeshHit.Clone();
+            GeometryModel3D g = new GeometryModel3D(m, new DiffuseMaterial(new SolidColorBrush(Colors.HotPink)));
+
+            ModelVisual3D v = new ModelVisual3D();
+            v.Content = g;
+
+            this.mainViewport.Children.Add(v);
+        }
+
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+            allowMoveLayer = true;
+        }
+
+        private void Window_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+            allowMoveLayer = false;
+        }
+
     }
 }
