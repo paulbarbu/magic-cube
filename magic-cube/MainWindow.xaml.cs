@@ -28,7 +28,7 @@ namespace magic_cube {
         Transform3DGroup rotations;
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
-            int size = 2;
+            int size = 3;
             double edge_len = 1;
             double space = 0.05;
             double len = edge_len * size + space * (size - 1);
@@ -53,33 +53,6 @@ namespace magic_cube {
 
             double small_num = Math.Pow(10, -5)+0.3;
 
-            double[] o = new double[] { -middle, edge_len + space / 2, middle };
-            Model3DGroup touchFaces = new Model3DGroup();
-
-            //MyModelVisual3D asd = new MyModelVisual3D();
-
-            /*
-            for (int y = 0; y < o.Length; y++) {
-                for (int z = 0; z < o.Length; z++) {
-                    for (int x = 0; x < o.Length; x++) {
-                        if (o[z] == middle) { //front
-                            double distanceX = edge_len + space;
-                            if (x == 0) {
-                                distanceX = edge_len + space / 2;
-                            }
-
-
-                            touchFaces.Children.Add(Helpers.createRectangleModel(new Point3D[]{
-                                new Point3D(o[x], y*middle+small_num, z),
-                                new Point3D(o[x], y*middle+small_num, z),
-                                new Point3D(o[x],  y*middle+small_num, z),                
-                                new Point3D(o[x],  y*middle+small_num, z),
-                            }, new DiffuseMaterial(new SolidColorBrush(Colors.HotPink))));
-                        }
-                    }
-                }
-            }*/
-
             MyModelVisual3D upper_far = new MyModelVisual3D();
             upper_far.Content = Helpers.createRectangleModel(new Point3D[]{
                 new Point3D(-middle, middle+small_num, -middle),
@@ -87,15 +60,17 @@ namespace magic_cube {
                 new Point3D(middle,  middle+small_num, 0),                
                 new Point3D(middle,  middle+small_num, -middle),
             }, new DiffuseMaterial(new SolidColorBrush(Colors.HotPink)));
-            upper_far.Tag = "UF";
+            upper_far.Tag = "roz";
 
-            ModelVisual3D upper_right = new ModelVisual3D();
+            MyModelVisual3D upper_right = new MyModelVisual3D();
             upper_right.Content = Helpers.createRectangleModel(new Point3D[]{
                 new Point3D(0, middle+small_num, -middle),
                 new Point3D(0, middle+small_num, middle),
                 new Point3D(middle,  middle+small_num, middle),                
                 new Point3D(middle,  middle+small_num, -middle),
             }, new DiffuseMaterial(new SolidColorBrush(Colors.Red)));
+
+            upper_right.Tag = "rosu";
 
             this.mainViewport.Children.Add(upper_far);
             this.mainViewport.Children.Add(upper_right);
