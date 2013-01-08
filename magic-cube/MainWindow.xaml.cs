@@ -46,13 +46,10 @@ namespace magic_cube {
             );
 
             rotations = new Transform3DGroup();
-            c.group.Transform = rotations;
-
-            ModelVisual3D m = new ModelVisual3D();
-            m.Content = c.group;
-
+            c.Transform = rotations;
+            
             this.mainViewport.Camera = camera;
-            this.mainViewport.Children.Add(m);
+            this.mainViewport.Children.Add(c);
 
             double small_num = Math.Pow(10, -5)+0.3;
 
