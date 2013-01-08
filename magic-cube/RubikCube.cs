@@ -24,6 +24,7 @@ namespace magic_cube {
         /// </summary>
         private double space;
 
+        //TODO: use Rect3D?
         public RubikCube(int size, Point3D o, double len = 1, double space = 0.1) {
             this.size = size;
             this.origin = o;
