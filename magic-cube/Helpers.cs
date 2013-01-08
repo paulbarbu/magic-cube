@@ -33,6 +33,13 @@ namespace magic_cube {
 
             return new GeometryModel3D(triangleMesh, m);
         }
+
+        public static MyModelVisual3D createTriangleModel(Point3D p0, Point3D p1, Point3D p2, Material m, string t) {
+            MyModelVisual3D retval = new MyModelVisual3D();
+            retval.Content = createTriangleModel(p0, p1, p2, m);
+            retval.Tag = t;
+            return retval;
+        }
         
         public static Model3DGroup createRectangleModel(Point3D[] p, Material m) {
             if (p.Length != 4) {
