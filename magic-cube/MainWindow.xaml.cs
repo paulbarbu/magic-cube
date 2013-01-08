@@ -136,27 +136,17 @@ namespace magic_cube {
         }
 
         private void moveLayer(Point p) {
-            RayMeshGeometry3DHitTestResult r = (RayMeshGeometry3DHitTestResult)VisualTreeHelper.HitTest(this.mainViewport, p);
+            VisualTreeHelper.HitTest(this.mainViewport, null, new HitTestResultCallback(resultCb), new PointHitTestParameters(p));
+        }
 
-            if (r == null) {
-                return;
-            }
+        private HitTestResultBehavior resultCb(HitTestResult r) {
+            MyModelVisual3D model = r.VisualHit as MyModelVisual3D;
 
-            try {
-                MyModelVisual3D model = (MyModelVisual3D)r.VisualHit;
+            if (model != null) {
                 Debug.Print(model.Tag);
             }
-            catch (InvalidCastException ex) {
-                ModelVisual3D model = (ModelVisual3D)r.VisualHit;
-            }
-
-            MeshGeometry3D m = r.MeshHit.Clone();
-            GeometryModel3D g = new GeometryModel3D(m, new DiffuseMaterial(new SolidColorBrush(Colors.Black)));
-
-            ModelVisual3D v = new ModelVisual3D();
-            v.Content = g;
-
-            this.mainViewport.Children.Add(v);
+            
+            return HitTestResultBehavior.Continue;
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
