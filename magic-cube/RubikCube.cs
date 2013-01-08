@@ -30,7 +30,6 @@ namespace magic_cube {
             this.origin = o;
             this.edge_len = len;
             this.space = space;
-            group = new Model3DGroup();
 
             createCube();
         }
@@ -53,7 +52,7 @@ namespace magic_cube {
                         colors = setFaceColors(x, y, z);
 
                         c = new Cube(p, edge_len, colors);
-                        group.Children.Add(c.group);
+                        this.Children.Add(c);
                     }
                 }
             }
