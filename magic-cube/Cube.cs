@@ -35,12 +35,10 @@ namespace magic_cube {
     /// this.mainViewport.Children.Add(m);
     /// </code>
     /// </summary>
-    public class Cube {
+    public class Cube : ModelVisual3D {
         private Point3D origin;
         private double edge_len;
-
-        public Model3DGroup group { get; protected set; }
-
+        
         private Material defaultMaterial = new DiffuseMaterial(new SolidColorBrush(Colors.Black));
         private Dictionary<CubeFace, Material> faces;
 
@@ -55,7 +53,6 @@ namespace magic_cube {
         /// This defaults to a solid black diffuse material
         /// </param>
         public Cube(Point3D o, double len, Dictionary<CubeFace, Material> f, Material defaultMaterial=null) {
-            this.group = new Model3DGroup();
             this.origin = o;
             this.edge_len = len;
             this.faces = f;
@@ -82,7 +79,7 @@ namespace magic_cube {
                 if (faces == null || !faces.TryGetValue(face, out material)) {
                     material = defaultMaterial;
                 }
-
+                
                 createFace(face, material);		 
 	        }
         }
@@ -239,8 +236,14 @@ namespace magic_cube {
                     break;
             }
 
-            group.Children.Add(Helpers.createTriangleModel(p0, p1, p2, m));
-            group.Children.Add(Helpers.createTriangleModel(p0, p2, p3, m));
+            ModelVisual3D r1 = new ModelVisual3D();
+            r1.Content = Helpers.createTriangleModel(p0, p1, p2, m);
+
+            ModelVisual3D r2 = new ModelVisual3D();
+            r2.Content = Helpers.createTriangleModel(p0, p2, p3, m);
+            
+            this.Children.Add(r1);
+            this.Children.Add(r2);
         }
     }
 }
