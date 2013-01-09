@@ -83,5 +83,182 @@ namespace magic_cube {
 
             return Vector3D.CrossProduct(v1, v2);
         }
+
+
+
+        public static MyModelVisual3D createTouchFaces(double len, int size, Transform3D rotations, Material touchFaceMaterial) {
+            double offset = len / size;
+            double middle = len / 2;
+            double small_num = Math.Pow(10, -5);
+
+            MyModelVisual3D touchFaces = new MyModelVisual3D();
+            MyModelVisual3D touchFace;
+
+            touchFaces.Transform = rotations;
+
+            for (int y = 0; y < size; y++) {
+                for (int z = 0; z < size; z++) {
+                    for (int x = 0; x < size; x++) {
+                        if (y == size - 1) { //up
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
+                                new Point3D(-middle + x*offset,       middle+small_num, -middle),
+                                new Point3D(-middle + x*offset,       middle+small_num, middle),
+                                new Point3D(-middle + (x+1) * offset, middle+small_num, middle),       
+                                new Point3D(-middle + (x+1) * offset, middle+small_num, -middle),
+                                }, touchFaceMaterial);
+
+                            touchFace.Tag = "UV" + x;
+
+                            touchFaces.Children.Add(touchFace);
+
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
+                                new Point3D(-middle, middle+small_num, -middle + z*offset),
+                                new Point3D(-middle, middle+small_num, -middle + (z+1)*offset),
+                                new Point3D(middle,  middle+small_num, -middle + (z+1)*offset),       
+                                new Point3D(middle,  middle+small_num, -middle + z*offset),
+                                }, touchFaceMaterial);
+
+                            touchFace.Tag = "UH" + z;
+
+                            touchFaces.Children.Add(touchFace);
+                        }
+
+                        if (y == 0) { //down
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
+                                new Point3D(-middle + x*offset,       -middle-small_num, -middle),
+                                new Point3D(-middle + x*offset,       -middle-small_num, middle),
+                                new Point3D(-middle + (x+1) * offset, -middle-small_num, middle),       
+                                new Point3D(-middle + (x+1) * offset, -middle-small_num, -middle),
+                                }, touchFaceMaterial, false);
+
+                            touchFace.Tag = "DV" + x;
+
+                            touchFaces.Children.Add(touchFace);
+
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
+                                new Point3D(-middle, -middle-small_num, -middle + z*offset),
+                                new Point3D(-middle, -middle-small_num, -middle + (z+1)*offset),
+                                new Point3D(middle,  -middle-small_num, -middle + (z+1)*offset),       
+                                new Point3D(middle,  -middle-small_num, -middle + z*offset),
+                                }, touchFaceMaterial, false);
+
+                            touchFace.Tag = "DH" + z;
+
+                            touchFaces.Children.Add(touchFace);
+                        }
+
+                        if (z == size - 1) { //front                            
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
+                                new Point3D(-middle + x*offset,     middle,  middle+small_num),
+                                new Point3D(-middle + x*offset,     -middle, middle+small_num),
+                                new Point3D(-middle + (x+1)*offset, -middle, middle+small_num),       
+                                new Point3D(-middle + (x+1)*offset, middle,  middle+small_num),
+                                }, touchFaceMaterial);
+
+                            touchFace.Tag = "FV" + x;
+
+                            touchFaces.Children.Add(touchFace);
+
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                  
+                                new Point3D(-middle, middle - y*offset,     middle+small_num),
+                                new Point3D(-middle, middle - (y+1)*offset, middle+small_num),
+                                new Point3D(middle,  middle - (y+1)*offset, middle+small_num),       
+                                new Point3D(middle,  middle - y*offset,     middle+small_num),
+                                }, touchFaceMaterial);
+
+                            touchFace.Tag = "FH" + y;
+
+                            touchFaces.Children.Add(touchFace);
+                        }
+
+                        if (z == 0) { //back
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
+                                new Point3D(-middle + x*offset,       middle,  -middle-small_num),
+                                new Point3D(-middle + x*offset,       -middle, -middle-small_num),
+                                new Point3D(-middle + (x+1) * offset, -middle, -middle-small_num),       
+                                new Point3D(-middle + (x+1) * offset, middle,  -middle-small_num),
+                                }, touchFaceMaterial, false);
+
+                            touchFace.Tag = "BV" + x;
+
+                            touchFaces.Children.Add(touchFace);
+
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                  
+                                new Point3D(-middle, middle - y*offset,     -middle-small_num),
+                                new Point3D(-middle, middle - (y+1)*offset, -middle-small_num),
+                                new Point3D(middle,  middle - (y+1)*offset, -middle-small_num),       
+                                new Point3D(middle,  middle - y*offset,     -middle-small_num),
+                                }, touchFaceMaterial, false);
+
+                            touchFace.Tag = "BH" + y;
+
+                            touchFaces.Children.Add(touchFace);
+                        }
+
+                        if (x == size - 1) { //right          
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
+                                new Point3D(middle+small_num, middle, -middle + (z+1)*offset),
+                                new Point3D(middle+small_num, -middle, -middle + (z+1)*offset),
+                                new Point3D(middle+small_num, -middle, -middle + z*offset),       
+                                new Point3D(middle+small_num, middle, -middle + z*offset),
+                                }, touchFaceMaterial);
+
+                            touchFace.Tag = "RV" + z;
+
+                            touchFaces.Children.Add(touchFace);
+
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                           
+                                new Point3D(middle+small_num, -middle + (y+1)*offset, middle),
+                                new Point3D(middle+small_num, -middle + y*offset,     middle),
+                                new Point3D(middle+small_num, -middle + y*offset,     -middle),       
+                                new Point3D(middle+small_num, -middle + (y+1)*offset, -middle),
+                                }, touchFaceMaterial);
+
+                            touchFace.Tag = "RH" + y;
+
+                            touchFaces.Children.Add(touchFace);
+                        }
+
+                        if (x == 0) { //left
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
+                                new Point3D(-middle-small_num, middle,  -middle + (z+1)*offset),
+                                new Point3D(-middle-small_num, -middle, -middle + (z+1)*offset),
+                                new Point3D(-middle-small_num, -middle, -middle + z*offset),       
+                                new Point3D(-middle-small_num, middle,  -middle + z*offset),
+                                }, touchFaceMaterial, false);
+
+                            touchFace.Tag = "LV" + z;
+
+                            touchFaces.Children.Add(touchFace);
+
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                           
+                                new Point3D(-middle-small_num, -middle + (y+1)*offset, middle),
+                                new Point3D(-middle-small_num, -middle + y*offset,     middle),
+                                new Point3D(-middle-small_num, -middle + y*offset,     -middle),       
+                                new Point3D(-middle-small_num, -middle + (y+1)*offset, -middle),
+                                }, touchFaceMaterial, false);
+
+                            touchFace.Tag = "LH" + y;
+
+                            touchFaces.Children.Add(touchFace);
+                        }
+                    }
+                }
+            }
+
+            return touchFaces;
+        }
     }
 }
