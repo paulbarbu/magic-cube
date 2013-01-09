@@ -60,7 +60,7 @@ namespace magic_cube {
             for (int y = 0; y < size; y++ ) {
                 for (int z = 0; z < size; z++) {
                     for (int x = 0; x < size; x++) {
-                        if (y == size - 1 && false) { //up
+                        if (y == size - 1) { //up
                             touchFace = new MyModelVisual3D();
                             touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
                                 new Point3D(-middle + x*offset, middle+small_num, -middle),
@@ -72,7 +72,6 @@ namespace magic_cube {
                             touchFace.Tag = "UV" + x;
 
                             face.Children.Add(touchFace);
-
 
                             touchFace = new MyModelVisual3D();
                             touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
@@ -87,7 +86,7 @@ namespace magic_cube {
                             face.Children.Add(touchFace);
                         }
 
-                        if (y == 0 && false) { //down
+                        if (y == 0) { //down
                             touchFace = new MyModelVisual3D();
                             touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
                                 new Point3D(-middle + x*offset, -middle-small_num, -middle),
@@ -99,7 +98,6 @@ namespace magic_cube {
                             touchFace.Tag = "DV" + x;
 
                             face.Children.Add(touchFace);
-
 
                             touchFace = new MyModelVisual3D();
                             touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
@@ -114,7 +112,7 @@ namespace magic_cube {
                             face.Children.Add(touchFace);
                         }
 
-                        if (z == size - 1 && false) { //front                            
+                        if (z == size - 1) { //front                            
                             touchFace = new MyModelVisual3D();
                             touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
                                 new Point3D(-middle + x*offset, middle, middle+small_num),
@@ -140,7 +138,7 @@ namespace magic_cube {
                             face.Children.Add(touchFace);
                         }
 
-                        if (z == 0 &&false) { //back
+                        if (z == 0) { //back
                             touchFace = new MyModelVisual3D();
                             touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
                                 new Point3D(-middle + x*offset, middle, -middle-small_num),
@@ -167,7 +165,6 @@ namespace magic_cube {
                         }
 
                         if (x == size - 1) { //right          
-                            
                             touchFace = new MyModelVisual3D();
                             touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
                                 new Point3D(middle+small_num, middle, -middle + (z+1)*offset),
@@ -192,6 +189,32 @@ namespace magic_cube {
 
                             face.Children.Add(touchFace);
                         }
+
+                        if (x == 0) { //left
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
+                                new Point3D(-middle-small_num, middle, -middle + (z+1)*offset),
+                                new Point3D(-middle-small_num, -middle, -middle + (z+1)*offset),
+                                new Point3D(-middle-small_num, -middle, -middle + z*offset),       
+                                new Point3D(-middle-small_num, middle, -middle + z*offset),
+                                }, new DiffuseMaterial(new SolidColorBrush(Colors.HotPink)), false);
+
+                            touchFace.Tag = "LV" + z;
+
+                            face.Children.Add(touchFace);
+                            
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                           
+                                new Point3D(-middle-small_num, -middle + (y+1)*offset, middle),
+                                new Point3D(-middle-small_num, -middle + y*offset, middle),
+                                new Point3D(-middle-small_num, -middle + y*offset, -middle),       
+                                new Point3D(-middle-small_num, -middle + (y+1)*offset, -middle),
+                                }, new DiffuseMaterial(new SolidColorBrush(Colors.AliceBlue)), false);
+
+                            touchFace.Tag = "LH" + y;
+
+                            face.Children.Add(touchFace);
+                        }
                     }
                 }
             }
@@ -199,29 +222,6 @@ namespace magic_cube {
 
             face.Transform = rotations;
             this.mainViewport.Children.Add(face);
-
-            /*
-            MyModelVisual3D upper_far = new MyModelVisual3D();
-            upper_far.Content = Helpers.createRectangleModel(new Point3D[]{
-                new Point3D(-middle, middle+small_num, -middle),
-                new Point3D(-middle, middle+small_num, 0),
-                new Point3D(middle,  middle+small_num, 0),                
-                new Point3D(middle,  middle+small_num, -middle),
-            }, new DiffuseMaterial(new SolidColorBrush(Colors.HotPink)));
-            upper_far.Tag = "roz";
-
-            MyModelVisual3D upper_right = new MyModelVisual3D();
-            upper_right.Content = Helpers.createRectangleModel(new Point3D[]{
-                new Point3D(0, middle+small_num, -middle),
-                new Point3D(0, middle+small_num, middle),
-                new Point3D(middle,  middle+small_num, middle),                
-                new Point3D(middle,  middle+small_num, -middle),
-            }, new DiffuseMaterial(new SolidColorBrush(Colors.Red)));
-
-            upper_right.Tag = "rosu";
-
-            this.mainViewport.Children.Add(upper_far);
-            this.mainViewport.Children.Add(upper_right);*/
         }
         
         private void Window_MouseRightButtonDown(object sender, MouseButtonEventArgs e) {
