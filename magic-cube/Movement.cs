@@ -6,13 +6,12 @@ using System.Diagnostics;
 
 namespace magic_cube {
     public enum Move {
-        dummy, // TODO: remove me
-        None,
         //clockwise
-        F, R, B, L, U, D,
+        F=-9, R, B, L, U, D,
         M, //Middle: the layer between L and R
         E, //Equator: the layer between U and D
         S, //Standing: the layer between F and B
+        None,
         //counter-clockwise
         Fp, Rp, Bp, Lp, Up, Dp, Mp, Ep, Sp //p from prime: '
     }
@@ -68,21 +67,126 @@ namespace magic_cube {
         }
 
         public Move getMove() {
+            Move retval = Move.None;
             CubeFace f = getDominantFace();
+
             if (f == CubeFace.None) {
-                return Move.None;
+                return retval;
             }
 
             filterMoves(f);
             SwipeDirection dir = getSingleDirection();
 
             if (dir == SwipeDirection.None) {
-                return Move.None;
+                return retval;
             }
 
             Debug.Print(dir.ToString());
 
-            return Move.dummy;
+            SwipedFace swipedFace = getSingleSwipedFace(dir);
+        
+            Debug.Print("face: {0}{1}{2}", swipedFace.face, swipedFace.direction, swipedFace.layer);
+
+            switch(swipedFace.face){
+                case CubeFace.F: case CubeFace.B:
+                    switch(swipedFace.direction){
+                        case SwipeDirection.H:
+                            switch(swipedFace.layer){
+                                case 0:
+                                    retval = Move.U;
+                                    break;
+                                case 1:
+                                    retval = Move.E;
+                                    break;
+                                case 2:
+                                    retval = Move.D;
+                                    break;
+                            }
+                            break;
+                        case SwipeDirection.V:
+                            switch (swipedFace.layer) {
+                                case 0:
+                                    retval = Move.L;
+                                    break;
+                                case 1:
+                                    retval = Move.M;
+                                    break;
+                                case 2:
+                                    retval = Move.R;
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+                case CubeFace.R: case CubeFace.L:
+                    switch (swipedFace.direction) {
+                        case SwipeDirection.H:
+                            switch(swipedFace.layer){
+                                case 0:
+                                    retval = Move.D;
+                                    break;
+                                case 1:
+                                    retval = Move.E;
+                                    break;
+                                case 2:
+                                    retval = Move.U;
+                                    break;
+                            }
+                            break;
+                        case SwipeDirection.V:
+                            switch (swipedFace.layer) {
+                                case 0:
+                                    retval = Move.B;
+                                    break;
+                                case 1:
+                                    retval = Move.S;
+                                    break;
+                                case 2:
+                                    retval = Move.F;
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+                case CubeFace.U: case CubeFace.D:
+                    switch (swipedFace.direction) {
+                        case SwipeDirection.H:
+                            switch (swipedFace.layer) {
+                                case 0:
+                                    retval = Move.B;
+                                    break;
+                                case 1:
+                                    retval = Move.S;
+                                    break;
+                                case 2:
+                                    retval = Move.F;
+                                    break;
+                            }
+                            break;
+                        case SwipeDirection.V:
+                            switch (swipedFace.layer) {
+                                case 0:
+                                    retval = Move.L;
+                                    break;
+                                case 1:
+                                    retval = Move.M;
+                                    break;
+                                case 2:
+                                    retval = Move.R;
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+            }
+
+            Debug.Print("Move: " + retval.ToString());
+
+            return retval;
+        }
+
+        private SwipedFace getSingleSwipedFace(SwipeDirection dir) {
+            return swipedFaces.Where(x => x.direction == dir).First();
         }
 
         private SwipeDirection getSingleDirection(){
@@ -96,7 +200,7 @@ namespace magic_cube {
             }
 
             try {
-                return directionCount.Select(x => x).Where(count => count.Value == 1).First().Key;
+                return directionCount.Where(count => count.Value == 1).First().Key;
             }
             catch(InvalidOperationException ex){
                 return SwipeDirection.None;
