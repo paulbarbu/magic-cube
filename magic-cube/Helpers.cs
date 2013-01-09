@@ -41,7 +41,7 @@ namespace magic_cube {
             return retval;
         }
         
-        public static Model3DGroup createRectangleModel(Point3D[] p, Material m) {
+        public static Model3DGroup createRectangleModel(Point3D[] p, Material m, bool up=true) {
             if (p.Length != 4) {
                 Debug.Print("BYE!");
                 return null;
@@ -49,8 +49,23 @@ namespace magic_cube {
 
             Model3DGroup rect = new Model3DGroup();
 
-            rect.Children.Add(createTriangleModel(p[0], p[1], p[2], m));
-            rect.Children.Add(createTriangleModel(p[0], p[2], p[3], m));
+            if (up) {
+                rect.Children.Add(createTriangleModel(p[0], p[1], p[2], m));
+                rect.Children.Add(createTriangleModel(p[0], p[2], p[3], m));
+            }
+            else {
+                rect.Children.Add(createTriangleModel(p[0], p[2], p[1], m));
+                rect.Children.Add(createTriangleModel(p[0], p[3], p[2], m));
+            }
+
+            return rect;
+        }
+
+
+        public static MyModelVisual3D createRectangleModel(Point3D[] p, Material m, string tag, bool up=true) {
+            MyModelVisual3D rect = new MyModelVisual3D();
+
+            rect.Children.Add(createRectangleModel(p, m, tag, up));
 
             return rect;
         }
