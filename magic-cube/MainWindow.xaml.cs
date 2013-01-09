@@ -27,6 +27,9 @@ namespace magic_cube {
         bool allowMoveCamera = false, allowMoveLayer = false;
         Transform3DGroup rotations;
 
+        Movement movement = new Movement();
+        HashSet<string> touchedFaces = new HashSet<string>();
+
         private void Window_Loaded(object sender, RoutedEventArgs e) {
             int size = 3;
             double edge_len = 1;
@@ -49,7 +52,9 @@ namespace magic_cube {
             
             this.mainViewport.Camera = camera;
             this.mainViewport.Children.Add(c);
-            this.mainViewport.Children.Add(Helpers.createTouchFaces(len, size, rotations, new DiffuseMaterial(new SolidColorBrush(Colors.Transparent))));
+            this.mainViewport.Children.Add(
+                Helpers.createTouchFaces(len, size, rotations, 
+                    new DiffuseMaterial(new SolidColorBrush(Colors.Transparent))));
         }
 
         private void Window_MouseRightButtonDown(object sender, MouseButtonEventArgs e) {
@@ -89,23 +94,38 @@ namespace magic_cube {
         private void moveLayer(Point p) {
             VisualTreeHelper.HitTest(this.mainViewport, null, new HitTestResultCallback(resultCb), new PointHitTestParameters(p));
         }
-        
+
         private HitTestResultBehavior resultCb(HitTestResult r) {
             MyModelVisual3D model = r.VisualHit as MyModelVisual3D;
 
             if (model != null) {
-                Debug.Print(model.Tag);
+                //Debug.Print(model.Tag);
+                touchedFaces.Add(model.Tag);
             }
             
             return HitTestResultBehavior.Continue;
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+            touchedFaces.Clear();
             allowMoveLayer = true;
         }
 
         private void Window_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
             allowMoveLayer = false;
+            movement.TouchedFaces = touchedFaces;
+
+            if (movement.getMove() != Move.None) {
+                foreach (var s in movement.swipedFaces) {
+                    Debug.Print("{0}{1}{2}", s.face, s.direction, s.layer);
+                }
+            }
+            else {
+                Debug.Print("Invalid move!");
+            }
+
+            Debug.Print("\n");
+            //Debug.Print(movement.getDominantFace().ToString());
         }
     }
 }
