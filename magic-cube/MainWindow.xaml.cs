@@ -166,7 +166,8 @@ namespace magic_cube {
                             face.Children.Add(touchFace);
                         }
 
-                        if (x == size - 1) { //right                        
+                        if (x == size - 1) { //right          
+                            
                             touchFace = new MyModelVisual3D();
                             touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
                                 new Point3D(middle+small_num, middle, -middle + (z+1)*offset),
@@ -177,19 +178,19 @@ namespace magic_cube {
 
                             touchFace.Tag = "RV" + z;
 
-                            face.Children.Add(touchFace);                            /*
+                            face.Children.Add(touchFace);
 
                             touchFace = new MyModelVisual3D();
-                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                  
-                                new Point3D(-middle, middle - y*offset, middle+small_num),
-                                new Point3D(-middle, middle - (y+1)*offset, middle+small_num),
-                                new Point3D(middle, middle - (y+1)*offset, middle+small_num),       
-                                new Point3D(middle, middle - y*offset, middle+small_num),
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                           
+                                new Point3D(middle+small_num, -middle + (y+1)*offset, middle),
+                                new Point3D(middle+small_num, -middle + y*offset, middle),
+                                new Point3D(middle+small_num, -middle + y*offset, -middle),       
+                                new Point3D(middle+small_num, -middle + (y+1)*offset, -middle),
                                 }, new DiffuseMaterial(new SolidColorBrush(Colors.AliceBlue)));
 
                             touchFace.Tag = "RH" + y;
 
-                            face.Children.Add(touchFace);*/
+                            face.Children.Add(touchFace);
                         }
                     }
                 }
