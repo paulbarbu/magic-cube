@@ -13,7 +13,7 @@ namespace magic_cube {
         S, //Standing: the layer between F and B
         None,
         //counter-clockwise
-        Fp, Rp, Bp, Lp, Up, Dp, Mp, Ep, Sp //p from prime: '
+        Sp, Ep, Mp, Dp, Up, Lp, Bp, Rp, Fp//p from prime: '
     }
 
     public enum SwipeDirection {
@@ -185,6 +185,7 @@ namespace magic_cube {
                     break;
             }
 
+            retval = (Move)(Convert.ToInt32(retval) * Convert.ToInt32(getRotationDirection(swipedFace)));
             Debug.Print("Move: " + retval.ToString());
 
             return retval;
@@ -217,13 +218,13 @@ namespace magic_cube {
                 new Dictionary<CubeFace, Dictionary<SwipeDirection, Dictionary<int, RotationDirection>>> {
                 {CubeFace.F, new Dictionary<SwipeDirection, Dictionary<int, RotationDirection>>{
                     {SwipeDirection.V, new Dictionary<int, RotationDirection>{
-                        {0, RotationDirection.CounterClockWise},
-                        {1, RotationDirection.CounterClockWise},
-                        {2, RotationDirection.ClockWise}
+                        {0, RotationDirection.ClockWise},
+                        {1, RotationDirection.ClockWise},
+                        {2, RotationDirection.CounterClockWise}
                     }},
                     {SwipeDirection.H, new Dictionary<int, RotationDirection>{
                         {0, RotationDirection.CounterClockWise},
-                        {1, RotationDirection.CounterClockWise},
+                        {1, RotationDirection.ClockWise},
                         {2, RotationDirection.ClockWise}
                     }}
                 }},
@@ -242,7 +243,7 @@ namespace magic_cube {
                 {CubeFace.B, new Dictionary<SwipeDirection, Dictionary<int, RotationDirection>>{
                     {SwipeDirection.V, new Dictionary<int, RotationDirection>{
                         {0, RotationDirection.CounterClockWise},
-                        {1, RotationDirection.ClockWise},
+                        {1, RotationDirection.CounterClockWise},
                         {2, RotationDirection.ClockWise}
                     }},
                     {SwipeDirection.H, new Dictionary<int, RotationDirection>{
@@ -254,7 +255,7 @@ namespace magic_cube {
                 {CubeFace.L, new Dictionary<SwipeDirection, Dictionary<int, RotationDirection>>{
                     {SwipeDirection.V, new Dictionary<int, RotationDirection>{
                         {0, RotationDirection.CounterClockWise},
-                        {1, RotationDirection.CounterClockWise},
+                        {1, RotationDirection.ClockWise},
                         {2, RotationDirection.ClockWise}
                     }},
                     {SwipeDirection.H, new Dictionary<int, RotationDirection>{
@@ -283,19 +284,22 @@ namespace magic_cube {
                     }},
                     {SwipeDirection.H, new Dictionary<int, RotationDirection>{
                         {0, RotationDirection.ClockWise},
-                        {1, RotationDirection.ClockWise},
+                        {1, RotationDirection.CounterClockWise},
                         {2, RotationDirection.CounterClockWise}
                     }}
                 }},
             };
 
 
-            return RotationDirection.CounterClockWise;
+            return (RotationDirection)(Convert.ToInt32(dirs[f.face][f.direction][f.layer]) * getLayerOrder(f));
         }
 
-        private int getLayerOrder() {
-            for (int i = 1; i < swipedFaces.Count; i++) {
-                if (swipedFaces[i].layer < swipedFaces[i - 1].layer) {
+        private int getLayerOrder(SwipedFace ignore) {
+            List<SwipedFace> orderedFaces = swipedFaces;
+            orderedFaces.Remove(ignore);
+
+            for (int i = 1; i < orderedFaces.Count; i++) {
+                if (orderedFaces[i].layer < orderedFaces[i - 1].layer) {
                     return -1;
                 }
             }
