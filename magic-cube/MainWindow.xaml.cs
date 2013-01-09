@@ -51,8 +51,155 @@ namespace magic_cube {
             this.mainViewport.Camera = camera;
             this.mainViewport.Children.Add(c);
 
-            double small_num = Math.Pow(10, -5)+0.3;
+            double small_num = Math.Pow(10, -5);
+            double offset = len/size;
 
+            MyModelVisual3D face = new MyModelVisual3D();
+            MyModelVisual3D touchFace;
+
+            for (int y = 0; y < size; y++ ) {
+                for (int z = 0; z < size; z++) {
+                    for (int x = 0; x < size; x++) {
+                        if (y == size - 1 && false) { //up
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
+                                new Point3D(-middle + x*offset, middle+small_num, -middle),
+                                new Point3D(-middle + x*offset, middle+small_num, middle),
+                                new Point3D(-middle + (x+1) * offset,  middle+small_num, middle),       
+                                new Point3D(-middle + (x+1) * offset,  middle+small_num, -middle),
+                                }, new DiffuseMaterial(new SolidColorBrush(Colors.HotPink)));
+                                 
+                            touchFace.Tag = "UV" + x;
+
+                            face.Children.Add(touchFace);
+
+
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
+                            new Point3D(-middle, middle+small_num, -middle + z*offset),
+                            new Point3D(-middle, middle+small_num, -middle + (z+1)*offset),
+                            new Point3D(middle,  middle+small_num, -middle + (z+1)*offset),       
+                            new Point3D(middle,  middle+small_num, -middle + z*offset),
+                            }, new DiffuseMaterial(new SolidColorBrush(Colors.AliceBlue)));
+
+                            touchFace.Tag = "UH" + z;
+
+                            face.Children.Add(touchFace);
+                        }
+
+                        if (y == 0 && false) { //down
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
+                                new Point3D(-middle + x*offset, -middle-small_num, -middle),
+                                new Point3D(-middle + x*offset, -middle-small_num, middle),
+                                new Point3D(-middle + (x+1) * offset,  -middle-small_num, middle),       
+                                new Point3D(-middle + (x+1) * offset,  -middle-small_num, -middle),
+                                }, new DiffuseMaterial(new SolidColorBrush(Colors.HotPink)), false);
+
+                            touchFace.Tag = "DV" + x;
+
+                            face.Children.Add(touchFace);
+
+
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
+                                new Point3D(-middle, -middle-small_num, -middle + z*offset),
+                                new Point3D(-middle, -middle-small_num, -middle + (z+1)*offset),
+                                new Point3D(middle,  -middle-small_num, -middle + (z+1)*offset),       
+                                new Point3D(middle,  -middle-small_num, -middle + z*offset),
+                                }, new DiffuseMaterial(new SolidColorBrush(Colors.AliceBlue)), false);
+
+                            touchFace.Tag = "DH" + z;
+
+                            face.Children.Add(touchFace);
+                        }
+
+                        if (z == size - 1 && false) { //front                            
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
+                                new Point3D(-middle + x*offset, middle, middle+small_num),
+                                new Point3D(-middle + x*offset, -middle, middle+small_num),
+                                new Point3D(-middle + (x+1)*offset, -middle, middle+small_num),       
+                                new Point3D(-middle + (x+1)*offset, middle, middle+small_num),
+                                }, new DiffuseMaterial(new SolidColorBrush(Colors.HotPink)));
+
+                            touchFace.Tag = "FV" + x;
+                            
+                            face.Children.Add(touchFace);
+                            
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                  
+                                new Point3D(-middle, middle - y*offset, middle+small_num),
+                                new Point3D(-middle, middle - (y+1)*offset, middle+small_num),
+                                new Point3D(middle, middle - (y+1)*offset, middle+small_num),       
+                                new Point3D(middle, middle - y*offset, middle+small_num),
+                                }, new DiffuseMaterial(new SolidColorBrush(Colors.AliceBlue)));
+
+                            touchFace.Tag = "FH" + y;
+
+                            face.Children.Add(touchFace);
+                        }
+
+                        if (z == 0 &&false) { //back
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
+                                new Point3D(-middle + x*offset, middle, -middle-small_num),
+                                new Point3D(-middle + x*offset, -middle, -middle-small_num),
+                                new Point3D(-middle + (x+1) * offset, -middle, -middle-small_num),       
+                                new Point3D(-middle + (x+1) * offset, middle, -middle-small_num),
+                                }, new DiffuseMaterial(new SolidColorBrush(Colors.HotPink)), false);
+
+                            touchFace.Tag = "BV" + x;
+
+                            face.Children.Add(touchFace);
+
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                  
+                                new Point3D(-middle, middle - y*offset, -middle-small_num),
+                                new Point3D(-middle, middle - (y+1)*offset, -middle-small_num),
+                                new Point3D(middle, middle - (y+1)*offset, -middle-small_num),       
+                                new Point3D(middle, middle - y*offset, -middle-small_num),
+                                }, new DiffuseMaterial(new SolidColorBrush(Colors.AliceBlue)), false);
+
+                            touchFace.Tag = "BH" + y;
+
+                            face.Children.Add(touchFace);
+                        }
+
+                        if (x == size - 1) { //right                        
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                                
+                                new Point3D(middle+small_num, middle, -middle + (z+1)*offset),
+                                new Point3D(middle+small_num, -middle, -middle + (z+1)*offset),
+                                new Point3D(middle+small_num, -middle, -middle + z*offset),       
+                                new Point3D(middle+small_num, middle, -middle + z*offset),
+                                }, new DiffuseMaterial(new SolidColorBrush(Colors.HotPink)));
+
+                            touchFace.Tag = "RV" + z;
+
+                            face.Children.Add(touchFace);                            /*
+
+                            touchFace = new MyModelVisual3D();
+                            touchFace.Content = Helpers.createRectangleModel(new Point3D[]{                  
+                                new Point3D(-middle, middle - y*offset, middle+small_num),
+                                new Point3D(-middle, middle - (y+1)*offset, middle+small_num),
+                                new Point3D(middle, middle - (y+1)*offset, middle+small_num),       
+                                new Point3D(middle, middle - y*offset, middle+small_num),
+                                }, new DiffuseMaterial(new SolidColorBrush(Colors.AliceBlue)));
+
+                            touchFace.Tag = "RH" + y;
+
+                            face.Children.Add(touchFace);*/
+                        }
+                    }
+                }
+            }
+
+
+            face.Transform = rotations;
+            this.mainViewport.Children.Add(face);
+
+            /*
             MyModelVisual3D upper_far = new MyModelVisual3D();
             upper_far.Content = Helpers.createRectangleModel(new Point3D[]{
                 new Point3D(-middle, middle+small_num, -middle),
@@ -73,7 +220,7 @@ namespace magic_cube {
             upper_right.Tag = "rosu";
 
             this.mainViewport.Children.Add(upper_far);
-            this.mainViewport.Children.Add(upper_right);
+            this.mainViewport.Children.Add(upper_right);*/
         }
         
         private void Window_MouseRightButtonDown(object sender, MouseButtonEventArgs e) {
@@ -113,7 +260,7 @@ namespace magic_cube {
         private void moveLayer(Point p) {
             VisualTreeHelper.HitTest(this.mainViewport, null, new HitTestResultCallback(resultCb), new PointHitTestParameters(p));
         }
-
+        
         private HitTestResultBehavior resultCb(HitTestResult r) {
             MyModelVisual3D model = r.VisualHit as MyModelVisual3D;
 
