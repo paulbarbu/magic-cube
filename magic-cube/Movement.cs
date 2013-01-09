@@ -22,6 +22,11 @@ namespace magic_cube {
         V, //vertical
     }
 
+    public enum RotationDirection {
+        CounterClockWise = -1,
+        ClockWise = 1,
+    }
+
     public struct SwipedFace {
         public CubeFace face;
         public SwipeDirection direction;
@@ -205,6 +210,97 @@ namespace magic_cube {
             catch(InvalidOperationException ex){
                 return SwipeDirection.None;
             }
+        }
+
+        private RotationDirection getRotationDirection(SwipedFace f){
+            Dictionary<CubeFace, Dictionary<SwipeDirection, Dictionary<int, RotationDirection>>> dirs = 
+                new Dictionary<CubeFace, Dictionary<SwipeDirection, Dictionary<int, RotationDirection>>> {
+                {CubeFace.F, new Dictionary<SwipeDirection, Dictionary<int, RotationDirection>>{
+                    {SwipeDirection.V, new Dictionary<int, RotationDirection>{
+                        {0, RotationDirection.CounterClockWise},
+                        {1, RotationDirection.CounterClockWise},
+                        {2, RotationDirection.ClockWise}
+                    }},
+                    {SwipeDirection.H, new Dictionary<int, RotationDirection>{
+                        {0, RotationDirection.CounterClockWise},
+                        {1, RotationDirection.CounterClockWise},
+                        {2, RotationDirection.ClockWise}
+                    }}
+                }},
+                {CubeFace.R, new Dictionary<SwipeDirection, Dictionary<int, RotationDirection>>{
+                    {SwipeDirection.V, new Dictionary<int, RotationDirection>{
+                        {0, RotationDirection.ClockWise},
+                        {1, RotationDirection.CounterClockWise},
+                        {2, RotationDirection.CounterClockWise}
+                    }},
+                    {SwipeDirection.H, new Dictionary<int, RotationDirection>{
+                        {0, RotationDirection.CounterClockWise},
+                        {1, RotationDirection.CounterClockWise},
+                        {2, RotationDirection.ClockWise}
+                    }}
+                }},
+                {CubeFace.B, new Dictionary<SwipeDirection, Dictionary<int, RotationDirection>>{
+                    {SwipeDirection.V, new Dictionary<int, RotationDirection>{
+                        {0, RotationDirection.CounterClockWise},
+                        {1, RotationDirection.ClockWise},
+                        {2, RotationDirection.ClockWise}
+                    }},
+                    {SwipeDirection.H, new Dictionary<int, RotationDirection>{
+                        {0, RotationDirection.ClockWise},
+                        {1, RotationDirection.CounterClockWise},
+                        {2, RotationDirection.CounterClockWise}
+                    }}
+                }},
+                {CubeFace.L, new Dictionary<SwipeDirection, Dictionary<int, RotationDirection>>{
+                    {SwipeDirection.V, new Dictionary<int, RotationDirection>{
+                        {0, RotationDirection.CounterClockWise},
+                        {1, RotationDirection.CounterClockWise},
+                        {2, RotationDirection.ClockWise}
+                    }},
+                    {SwipeDirection.H, new Dictionary<int, RotationDirection>{
+                        {0, RotationDirection.ClockWise},
+                        {1, RotationDirection.ClockWise},
+                        {2, RotationDirection.CounterClockWise}
+                    }}
+                }},
+                {CubeFace.U, new Dictionary<SwipeDirection, Dictionary<int, RotationDirection>>{
+                    {SwipeDirection.V, new Dictionary<int, RotationDirection>{
+                        {0, RotationDirection.ClockWise},
+                        {1, RotationDirection.ClockWise},
+                        {2, RotationDirection.CounterClockWise}
+                    }},
+                    {SwipeDirection.H, new Dictionary<int, RotationDirection>{
+                        {0, RotationDirection.CounterClockWise},
+                        {1, RotationDirection.ClockWise},
+                        {2, RotationDirection.ClockWise}
+                    }}
+                }},                
+                {CubeFace.D, new Dictionary<SwipeDirection, Dictionary<int, RotationDirection>>{
+                    {SwipeDirection.V, new Dictionary<int, RotationDirection>{
+                        {0, RotationDirection.CounterClockWise},
+                        {1, RotationDirection.CounterClockWise},
+                        {2, RotationDirection.ClockWise}
+                    }},
+                    {SwipeDirection.H, new Dictionary<int, RotationDirection>{
+                        {0, RotationDirection.ClockWise},
+                        {1, RotationDirection.ClockWise},
+                        {2, RotationDirection.CounterClockWise}
+                    }}
+                }},
+            };
+
+
+            return RotationDirection.CounterClockWise;
+        }
+
+        private int getLayerOrder() {
+            for (int i = 1; i < swipedFaces.Count; i++) {
+                if (swipedFaces[i].layer < swipedFaces[i - 1].layer) {
+                    return -1;
+                }
+            }
+
+            return 1;
         }
 
         private CubeFace getDominantFace(){
