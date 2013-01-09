@@ -7,13 +7,13 @@ using System.Diagnostics;
 namespace magic_cube {
     public enum Move {
         //clockwise
-        F=-9, R, B, L, U, D,
+        F, R, B, L, U, D,
         M, //Middle: the layer between L and R
         E, //Equator: the layer between U and D
         S, //Standing: the layer between F and B
         None,
         //counter-clockwise
-        Sp, Ep, Mp, Dp, Up, Lp, Bp, Rp, Fp//p from prime: '
+        //Sp, Ep, Mp, Dp, Up, Lp, Bp, Rp, Fp//p from prime: '
     }
 
     public enum SwipeDirection {
@@ -24,7 +24,8 @@ namespace magic_cube {
 
     public enum RotationDirection {
         CounterClockWise = -1,
-        ClockWise = 1,
+        None,
+        ClockWise,
     }
 
     public struct SwipedFace {
@@ -71,8 +72,8 @@ namespace magic_cube {
             }
         }
 
-        public Move getMove() {
-            Move retval = Move.None;
+        public KeyValuePair<Move, RotationDirection> getMove() {
+            KeyValuePair<Move, RotationDirection> retval = new KeyValuePair<Move,RotationDirection>(Move.None, RotationDirection.None);
             CubeFace f = getDominantFace();
 
             if (f == CubeFace.None) {
@@ -92,32 +93,34 @@ namespace magic_cube {
         
             Debug.Print("face: {0}{1}{2}", swipedFace.face, swipedFace.direction, swipedFace.layer);
 
+            Move m = Move.None;
+
             switch(swipedFace.face){
                 case CubeFace.F: case CubeFace.B:
                     switch(swipedFace.direction){
                         case SwipeDirection.H:
                             switch(swipedFace.layer){
                                 case 0:
-                                    retval = Move.U;
+                                    m = Move.U;
                                     break;
                                 case 1:
-                                    retval = Move.E;
+                                    m = Move.E;
                                     break;
                                 case 2:
-                                    retval = Move.D;
+                                    m = Move.D;
                                     break;
                             }
                             break;
                         case SwipeDirection.V:
                             switch (swipedFace.layer) {
                                 case 0:
-                                    retval = Move.L;
+                                    m = Move.L;
                                     break;
                                 case 1:
-                                    retval = Move.M;
+                                    m = Move.M;
                                     break;
                                 case 2:
-                                    retval = Move.R;
+                                    m = Move.R;
                                     break;
                             }
                             break;
@@ -128,26 +131,26 @@ namespace magic_cube {
                         case SwipeDirection.H:
                             switch(swipedFace.layer){
                                 case 0:
-                                    retval = Move.D;
+                                    m = Move.D;
                                     break;
                                 case 1:
-                                    retval = Move.E;
+                                    m = Move.E;
                                     break;
                                 case 2:
-                                    retval = Move.U;
+                                    m = Move.U;
                                     break;
                             }
                             break;
                         case SwipeDirection.V:
                             switch (swipedFace.layer) {
                                 case 0:
-                                    retval = Move.B;
+                                    m = Move.B;
                                     break;
                                 case 1:
-                                    retval = Move.S;
+                                    m = Move.S;
                                     break;
                                 case 2:
-                                    retval = Move.F;
+                                    m = Move.F;
                                     break;
                             }
                             break;
@@ -158,26 +161,26 @@ namespace magic_cube {
                         case SwipeDirection.H:
                             switch (swipedFace.layer) {
                                 case 0:
-                                    retval = Move.B;
+                                    m = Move.B;
                                     break;
                                 case 1:
-                                    retval = Move.S;
+                                    m = Move.S;
                                     break;
                                 case 2:
-                                    retval = Move.F;
+                                    m = Move.F;
                                     break;
                             }
                             break;
                         case SwipeDirection.V:
                             switch (swipedFace.layer) {
                                 case 0:
-                                    retval = Move.L;
+                                    m = Move.L;
                                     break;
                                 case 1:
-                                    retval = Move.M;
+                                    m = Move.M;
                                     break;
                                 case 2:
-                                    retval = Move.R;
+                                    m = Move.R;
                                     break;
                             }
                             break;
@@ -185,7 +188,7 @@ namespace magic_cube {
                     break;
             }
 
-            retval = (Move)(Convert.ToInt32(retval) * Convert.ToInt32(getRotationDirection(swipedFace)));
+            retval = new KeyValuePair<Move,RotationDirection>(m, getRotationDirection(swipedFace));
             Debug.Print("Move: " + retval.ToString());
 
             return retval;
