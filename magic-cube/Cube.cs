@@ -16,6 +16,7 @@ namespace magic_cube {
         L, // left
         U, // up
         D, // down
+        None
     }
 
     /// <summary>
