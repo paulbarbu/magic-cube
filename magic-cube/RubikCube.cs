@@ -49,6 +49,10 @@ namespace magic_cube {
             for (int y = 0; y < size; y++) {
                 for (int z = 0; z < size; z++) {
                     for (int x = 0; x < size; x++) {
+                         if (y == 1 && x == 1 && z == 1) {
+                             continue;
+                        }
+
                         x_offset = (edge_len + space) * x;
                         y_offset = (edge_len + space) * y;
                         z_offset = (edge_len + space) * z;
@@ -56,7 +60,7 @@ namespace magic_cube {
                         Point3D p = new Point3D(origin.X + x_offset, origin.Y + y_offset, origin.Z + z_offset);
 
                         colors = setFaceColors(x, y, z);
-                        
+
                         c = new Cube(p, edge_len, colors, getPossibleMoves(x, y, z));
                         this.Children.Add(c);
                     }
