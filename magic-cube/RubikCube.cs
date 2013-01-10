@@ -107,11 +107,14 @@ namespace magic_cube {
         public void rotate(KeyValuePair<Move, RotationDirection> move, CubeFace f) {
             HashSet<Move> possibleMoves = new HashSet<Move>();
             Vector3D axis = new Vector3D();
+
+            int ct = 0;
             
             foreach(Cube c in this.Children){
                 possibleMoves = new HashSet<Move>(c.possibleMoves);
                 possibleMoves.Remove((Move)f);
                 if(possibleMoves.Contains(move.Key)){
+                    ct++;
                     foreach (Move m in c.possibleMoves) {
                         Debug.Write(m.ToString()+",");   
                     }
@@ -157,6 +160,15 @@ namespace magic_cube {
 
                     c.possibleMoves = getNextPossibleMoves(c.possibleMoves, move.Key, move.Value);
                 }
+            }
+
+            Debug.Print("No. cubes selected: " + ct);
+
+            if(move.Key == Move.S || move.Key == Move.M || move.Key == Move.E){
+                Debug.Assert(ct == 8);
+            }
+            else{
+                Debug.Assert(ct == 9);
             }
         }
 
@@ -267,7 +279,7 @@ namespace magic_cube {
                     }
                 }
                 else {
-                    if (moves.Contains(s[2]) && (moves.Contains(s[3]) || s[3] == Move.None)) {
+                    if (moves.Contains(s[2]) && moves.Contains(s[3])) {
                         moves.Remove(s[2]);
                         moves.Add(s[0]);
 
