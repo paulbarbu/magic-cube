@@ -88,8 +88,6 @@ namespace magic_cube {
                 return retval;
             }
 
-            Debug.Print(dir.ToString());
-
             SwipedFace swipedFace = getSingleSwipedFace(dir);
         
             Debug.Print("face: {0}{1}{2}", swipedFace.face, swipedFace.direction, swipedFace.layer);

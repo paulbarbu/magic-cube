@@ -117,10 +117,6 @@ namespace magic_cube {
             KeyValuePair<Move, RotationDirection> m = movement.getMove();
 
             if (m.Key != Move.None) {
-                foreach (var s in movement.swipedFaces) {
-                    Debug.Print("{0}{1}{2}", s.face, s.direction, s.layer);
-                }
-
                 c.rotate(m, movement.getDominantFace());
             }
             else {
@@ -128,7 +124,6 @@ namespace magic_cube {
             }
 
             Debug.Print("\n");
-            //Debug.Print(movement.getDominantFace().ToString());
         }
     }
 }

@@ -31,15 +31,9 @@ namespace magic_cube {
             this.edge_len = len;
             this.space = space;
 
-            //TODO: create the cube out of faces?
-
             createCube();
         }
 
-        //TODO: roteste si geometria, nu doar modelul
-        //TODO: la fiecare Cube, in functie de pozitie, ii atribui un grup de rotatii
-
-        //TODO: marcheaza fetele cubului in loc de dreptunghiuri invizibile si roteste-le pe alea
         protected override void createCube() {
             Cube c;
             Dictionary<CubeFace, Material> colors;
@@ -108,18 +102,20 @@ namespace magic_cube {
             HashSet<Move> possibleMoves = new HashSet<Move>();
             Vector3D axis = new Vector3D();
 
-            int ct = 0;
+            /*int ct = 0;
+            List<Cube> selected = new List<Cube>();*/
             
             foreach(Cube c in this.Children){
                 possibleMoves = new HashSet<Move>(c.possibleMoves);
                 possibleMoves.Remove((Move)f);
                 if(possibleMoves.Contains(move.Key)){
+                    /*selected.Add(c);
                     ct++;
                     foreach (Move m in c.possibleMoves) {
-                        Debug.Write(m.ToString()+",");   
+                        Debug.Write(m.ToString());   
                     }
                     Debug.WriteLine("");
-
+                    */
                     switch (move.Key) {
                         case Move.F:
                         case Move.S:
@@ -161,18 +157,41 @@ namespace magic_cube {
                     c.possibleMoves = getNextPossibleMoves(c.possibleMoves, move.Key, move.Value);
                 }
             }
-
+            /*
             Debug.Print("No. cubes selected: " + ct);
 
             if(move.Key == Move.S || move.Key == Move.M || move.Key == Move.E){
-                Debug.Assert(ct == 8);
+                //Debug.Assert(ct == 8);
+                if (ct != 8) {
+
+                    Debug.WriteLine("");
+                    foreach (Cube c in selected) {
+                        foreach (Move i in c.possibleMoves){
+	                            Debug.Write(i.ToString());
+                        }
+                        Debug.WriteLine("");
+                    }
+                    return;
+                }
             }
             else{
-                Debug.Assert(ct == 9);
+                //Debug.Assert(ct == 9);
+                if (ct != 9) {
+                    Debug.WriteLine("");
+                    foreach (Cube c in selected) {
+                        foreach (Move i in c.possibleMoves) {
+                            Debug.Write(i.ToString());
+                        }
+                        Debug.WriteLine("");
+                    }
+                    return;
+                }
             }
+             * */
         }
 
         private HashSet<Move> getNextPossibleMoves(HashSet<Move>moves, Move m, RotationDirection direction){
+            //HashSet<Move> iMoves = new HashSet<Move>(moves);
              Dictionary<Move, List<List<Move>>> substitutions = new Dictionary<Move, List<List<Move>>> {
                 {Move.F, new List<List<Move>>{
                     new List<Move>{Move.U, Move.L, Move.U, Move.R},
@@ -291,6 +310,11 @@ namespace magic_cube {
                 }
             }
 
+            /*
+            if (moves.Count != 3) {
+                if(true){}
+            }
+            */
             return moves;
         }
 

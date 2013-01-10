@@ -43,7 +43,6 @@ namespace magic_cube {
         
         public static Model3DGroup createRectangleModel(Point3D[] p, Material m, bool up=true) {
             if (p.Length != 4) {
-                Debug.Print("BYE!");
                 return null;
             }
 
