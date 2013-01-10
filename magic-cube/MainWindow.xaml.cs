@@ -23,6 +23,9 @@ namespace magic_cube {
             InitializeComponent();
         }
 
+        //TODO: project the cube to a 2d matrix where I'll check if the puzzle is solved and where I will scramble the cube before the game starts
+        //TODO: create a RubikCube instance out of a 2D matrix so I can display the scrambled cube
+
         Point startMoveCamera;
         bool allowMoveCamera = false, allowMoveLayer = false;
         Transform3DGroup rotations = new Transform3DGroup();
