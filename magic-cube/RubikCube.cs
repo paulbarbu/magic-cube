@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Windows.Media.Media3D;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Diagnostics;
+using System.Windows;
 
 namespace magic_cube {
     public class RubikCube : Cube {
@@ -152,9 +154,17 @@ namespace magic_cube {
                             break;
                     }
 
-                    c.rotations.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(axis, 90 * Convert.ToInt32(move.Value)), new Point3D(0, 0, 0)));
-
                     c.possibleMoves = getNextPossibleMoves(c.possibleMoves, move.Key, move.Value);
+
+                    double angle = 90 * Convert.ToInt32(move.Value);
+
+                    AxisAngleRotation3D rotation = new AxisAngleRotation3D(axis, angle);
+                    RotateTransform3D transform = new RotateTransform3D(rotation, new Point3D(0, 0, 0));
+                    
+                    DoubleAnimation animation = new DoubleAnimation(0, angle, TimeSpan.FromMilliseconds(370));                                       
+                    rotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, animation);
+
+                    c.rotations.Children.Add(transform);       
                 }
             }
             /*
