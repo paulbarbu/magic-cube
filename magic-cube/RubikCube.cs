@@ -105,10 +105,10 @@ namespace magic_cube {
             Vector3D axis = new Vector3D();
             
             foreach(Cube c in this.Children){
-                possibleMoves = c.possibleMoves;
+                possibleMoves = new HashSet<Move>(c.possibleMoves);
                 possibleMoves.Remove((Move)f);
                 if(possibleMoves.Contains(move.Key)){
-                    foreach (Move m in possibleMoves) {
+                    foreach (Move m in c.possibleMoves) {
                         Debug.Write(m.ToString()+",");   
                     }
                     Debug.WriteLine("");
@@ -157,7 +157,6 @@ namespace magic_cube {
         }
 
         private HashSet<Move> getNextPossibleMoves(HashSet<Move>moves, Move m, RotationDirection direction){
-            //TODO: S M E
              Dictionary<Move, List<List<Move>>> substitutions = new Dictionary<Move, List<List<Move>>> {
                 {Move.F, new List<List<Move>>{
                     new List<Move>{Move.U, Move.L, Move.U, Move.R},
@@ -169,6 +168,16 @@ namespace magic_cube {
                     new List<Move>{Move.M, Move.D, Move.L, Move.E},
                     new List<Move>{Move.L, Move.E, Move.U, Move.M},
                 }},
+                {Move.B, new List<List<Move>>{
+                    new List<Move>{Move.R, Move.U, Move.L, Move.U},
+                    new List<Move>{Move.R, Move.D, Move.R, Move.U},
+                    new List<Move>{Move.L, Move.D, Move.R, Move.D},
+                    new List<Move>{Move.L, Move.U, Move.L, Move.D},
+                    new List<Move>{Move.R, Move.E, Move.M, Move.U},
+                    new List<Move>{Move.D, Move.M, Move.R, Move.E},
+                    new List<Move>{Move.E, Move.L, Move.D, Move.M},
+                    new List<Move>{Move.M, Move.U, Move.E, Move.L},
+                }},
                 {Move.U, new List<List<Move>>{
                     new List<Move>{Move.B, Move.L, Move.B, Move.R},
                     new List<Move>{Move.B, Move.R, Move.F, Move.R},
@@ -178,6 +187,16 @@ namespace magic_cube {
                     new List<Move>{Move.S, Move.R, Move.M, Move.F},
                     new List<Move>{Move.M, Move.F, Move.L, Move.S},
                     new List<Move>{Move.L, Move.S, Move.B, Move.M},
+                }},                
+                {Move.D, new List<List<Move>>{
+                    new List<Move>{Move.R, Move.B, Move.L, Move.B},
+                    new List<Move>{Move.R, Move.F, Move.R, Move.B},
+                    new List<Move>{Move.L, Move.F, Move.R, Move.F},
+                    new List<Move>{Move.L, Move.B, Move.L, Move.F},
+                    new List<Move>{Move.R, Move.S, Move.M, Move.B},
+                    new List<Move>{Move.F, Move.M, Move.R, Move.S},
+                    new List<Move>{Move.S, Move.L, Move.F, Move.M},
+                    new List<Move>{Move.M, Move.B, Move.S, Move.L},
                 }},
                 {Move.L, new List<List<Move>>{
                     new List<Move>{Move.B, Move.U, Move.F, Move.U},
@@ -188,59 +207,48 @@ namespace magic_cube {
                     new List<Move>{Move.E, Move.F, Move.D, Move.S},
                     new List<Move>{Move.D, Move.S, Move.B, Move.E},
                     new List<Move>{Move.B, Move.E, Move.S, Move.U},
+                }},  
+                {Move.R, new List<List<Move>>{
+                    new List<Move>{Move.U, Move.F, Move.U, Move.B},
+                    new List<Move>{Move.D, Move.F, Move.U, Move.F},
+                    new List<Move>{Move.D, Move.B, Move.D, Move.F},
+                    new List<Move>{Move.U, Move.B, Move.D, Move.B},
+                    new List<Move>{Move.F, Move.E, Move.U, Move.S},
+                    new List<Move>{Move.S, Move.D, Move.F, Move.E},
+                    new List<Move>{Move.E, Move.B, Move.S, Move.D},
+                    new List<Move>{Move.U, Move.S, Move.E, Move.B},
                 }},                
                 {Move.M, new List<List<Move>>{
-                    new List<Move>{Move.U, Move.F,    Move.E, Move.None},
-                    new List<Move>{Move.E, Move.None, Move.D, Move.F},
-                    new List<Move>{Move.D, Move.F,    Move.S, Move.None},
-                    new List<Move>{Move.S, Move.None, Move.B, Move.D},
-                    new List<Move>{Move.B, Move.D,    Move.E, Move.None},
-                    new List<Move>{Move.E, Move.None, Move.U, Move.B},
-                    new List<Move>{Move.U, Move.B,    Move.S, Move.None},
-                    new List<Move>{Move.S, Move.None, Move.U, Move.F},
+                    new List<Move>{Move.U, Move.F, Move.D, Move.F},
+                    new List<Move>{Move.D, Move.F, Move.B, Move.D},
+                    new List<Move>{Move.B, Move.D, Move.B, Move.U},
+                    new List<Move>{Move.B, Move.U, Move.U, Move.F},
+                    new List<Move>{Move.E, Move.F, Move.D, Move.S},
+                    new List<Move>{Move.D, Move.S, Move.B, Move.E},
+                    new List<Move>{Move.B, Move.E, Move.U, Move.S},
+                    new List<Move>{Move.U, Move.S, Move.E, Move.F},
                 }},         
                 {Move.E, new List<List<Move>>{
-                    new List<Move>{Move.L, Move.F,    Move.M, Move.None},
-                    new List<Move>{Move.M, Move.None, Move.R, Move.F},
-                    new List<Move>{Move.R, Move.F,    Move.S, Move.None},
-                    new List<Move>{Move.S, Move.None, Move.B, Move.R},
-                    new List<Move>{Move.B, Move.R,    Move.M, Move.None},
-                    new List<Move>{Move.M, Move.None, Move.B, Move.L},
-                    new List<Move>{Move.B, Move.L,    Move.S, Move.None},
-                    new List<Move>{Move.S, Move.None, Move.L, Move.F},
+                    new List<Move>{Move.L, Move.F, Move.R, Move.F},
+                    new List<Move>{Move.R, Move.F, Move.R, Move.B},
+                    new List<Move>{Move.R, Move.B, Move.L, Move.B},
+                    new List<Move>{Move.L, Move.B, Move.L, Move.F},
+                    new List<Move>{Move.M, Move.F, Move.R, Move.S},
+                    new List<Move>{Move.R, Move.S, Move.B, Move.M},
+                    new List<Move>{Move.B, Move.M, Move.L, Move.S},
+                    new List<Move>{Move.L, Move.S, Move.M, Move.F},
                 }},         
                 {Move.S, new List<List<Move>>{
-                    new List<Move>{Move.U, Move.R,    Move.E, Move.None},
-                    new List<Move>{Move.E, Move.None, Move.R, Move.D},
-                    new List<Move>{Move.R, Move.D,    Move.M, Move.None},
-                    new List<Move>{Move.M, Move.None, Move.L, Move.D},
-                    new List<Move>{Move.L, Move.D,    Move.E, Move.None},
-                    new List<Move>{Move.E, Move.None, Move.U, Move.L},
-                    new List<Move>{Move.U, Move.L,    Move.M, Move.None},
-                    new List<Move>{Move.M, Move.None, Move.U, Move.R},
+                    new List<Move>{Move.U, Move.R, Move.D, Move.R},
+                    new List<Move>{Move.D, Move.R, Move.D, Move.L},
+                    new List<Move>{Move.D, Move.L, Move.U, Move.L},
+                    new List<Move>{Move.U, Move.L, Move.U, Move.R},
+                    new List<Move>{Move.M, Move.U, Move.E, Move.R},
+                    new List<Move>{Move.E, Move.R, Move.M, Move.D},
+                    new List<Move>{Move.M, Move.D, Move.E, Move.L},
+                    new List<Move>{Move.E, Move.L, Move.M, Move.U},
                 }},
             };
-
-            List<List<Move>> l = new List<List<Move>>();
-
-            l = substitutions[Move.F];
-            foreach (List<Move> item in l)
-	        {
-		        item.Reverse();
-	        }
-            substitutions.Add(Move.B, l);
-
-            l = substitutions[Move.U];
-            foreach (List<Move> item in l) {
-                item.Reverse();
-            }
-            substitutions.Add(Move.D, l);
-
-            l = substitutions[Move.L];
-            foreach (List<Move> item in l) {
-                item.Reverse();
-            }
-            substitutions.Add(Move.R, l);
 
             foreach (List<Move> s in substitutions[m]) {
                 if (direction == RotationDirection.ClockWise) {
@@ -250,15 +258,19 @@ namespace magic_cube {
 
                         moves.Remove(s[1]);
                         moves.Add(s[3]);
+
+                        break;
                     }
                 }
                 else {
-                    if (moves.Contains(s[2]) && moves.Contains(s[3])) {
+                    if (moves.Contains(s[2]) && (moves.Contains(s[3]) || s[3] == Move.None)) {
                         moves.Remove(s[2]);
                         moves.Add(s[0]);
 
                         moves.Remove(s[3]);
                         moves.Add(s[1]);
+
+                        break;
                     }
                 }
             }
