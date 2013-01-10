@@ -236,9 +236,9 @@ namespace magic_cube {
                 }},                
                 {Move.M, new List<List<Move>>{
                     new List<Move>{Move.U, Move.F, Move.D, Move.F},
-                    new List<Move>{Move.D, Move.F, Move.B, Move.D},
+                    new List<Move>{Move.D, Move.F, Move.D, Move.B},
                     new List<Move>{Move.B, Move.D, Move.B, Move.U},
-                    new List<Move>{Move.B, Move.U, Move.U, Move.F},
+                    new List<Move>{Move.B, Move.U, Move.F, Move.U},
                     new List<Move>{Move.E, Move.F, Move.D, Move.S},
                     new List<Move>{Move.D, Move.S, Move.B, Move.E},
                     new List<Move>{Move.B, Move.E, Move.U, Move.S},
