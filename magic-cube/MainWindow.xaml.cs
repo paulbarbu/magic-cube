@@ -25,7 +25,8 @@ namespace magic_cube {
 
         Point startMoveCamera;
         bool allowMoveCamera = false, allowMoveLayer = false;
-        Transform3DGroup rotations;
+        Transform3DGroup rotations = new Transform3DGroup();
+        RubikCube c;
 
         Movement movement = new Movement();
         HashSet<string> touchedFaces = new HashSet<string>();
@@ -37,7 +38,8 @@ namespace magic_cube {
             double len = edge_len * size + space * (size - 1);
             double distanceFactor = 2.3;
 
-            RubikCube c = new RubikCube(size, new Point3D(-len/2, -len/2, -len/2), edge_len, space);
+            c = new RubikCube(size, new Point3D(-len / 2, -len / 2, -len / 2), edge_len, space);
+            c.Transform = rotations;
 
             Point3D cameraPos = new Point3D(len * distanceFactor, len * distanceFactor, len * distanceFactor);
             PerspectiveCamera camera = new PerspectiveCamera(
@@ -47,8 +49,6 @@ namespace magic_cube {
                 45
             );
 
-            rotations = new Transform3DGroup();
-            c.Transform = rotations;
             
             this.mainViewport.Camera = camera;
             this.mainViewport.Children.Add(c);
@@ -99,7 +99,6 @@ namespace magic_cube {
             MyModelVisual3D model = r.VisualHit as MyModelVisual3D;
 
             if (model != null) {
-                //Debug.Print(model.Tag);
                 touchedFaces.Add(model.Tag);
             }
             
@@ -115,10 +114,14 @@ namespace magic_cube {
             allowMoveLayer = false;
             movement.TouchedFaces = touchedFaces;
 
-            if (movement.getMove() != Move.None) {
+            KeyValuePair<Move, RotationDirection> m = movement.getMove();
+
+            if (m.Key != Move.None) {
                 foreach (var s in movement.swipedFaces) {
                     Debug.Print("{0}{1}{2}", s.face, s.direction, s.layer);
                 }
+
+                c.rotate(m, movement.getDominantFace());
             }
             else {
                 Debug.Print("Invalid move!");

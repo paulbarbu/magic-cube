@@ -42,6 +42,8 @@ namespace magic_cube {
         
         private Material defaultMaterial = new DiffuseMaterial(new SolidColorBrush(Colors.Black));
         private Dictionary<CubeFace, Material> faces;
+        public HashSet<Move> possibleMoves = new HashSet<Move>();
+        public Transform3DGroup rotations = new Transform3DGroup();
 
         /// <summary>
         /// Cube constructor
@@ -53,15 +55,18 @@ namespace magic_cube {
         /// that are not included in the previous parameter.
         /// This defaults to a solid black diffuse material
         /// </param>
-        public Cube(Point3D o, double len, Dictionary<CubeFace, Material> f, Material defaultMaterial=null) {
+        public Cube(Point3D o, double len, Dictionary<CubeFace, Material> f, HashSet<Move> possibleMoves, Material defaultMaterial=null) {
             this.origin = o;
             this.edge_len = len;
             this.faces = f;
+            this.possibleMoves = possibleMoves;
 
             if(defaultMaterial != null){
                 this.defaultMaterial = defaultMaterial;
             }
 
+            this.Transform = this.rotations;
+            
             createCube();
         }
 
@@ -238,9 +243,9 @@ namespace magic_cube {
             }
 
             ModelVisual3D r1 = new ModelVisual3D();
-            r1.Content = Helpers.createTriangleModel(p0, p1, p2, m);
-
             ModelVisual3D r2 = new ModelVisual3D();
+
+            r1.Content = Helpers.createTriangleModel(p0, p1, p2, m);
             r2.Content = Helpers.createTriangleModel(p0, p2, p3, m);
             
             this.Children.Add(r1);

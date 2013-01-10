@@ -16,6 +16,7 @@ namespace magic_cube {
         //Sp, Ep, Mp, Dp, Up, Lp, Bp, Rp, Fp//p from prime: '
     }
 
+    //TODO: Extend this to a cube of sizes: 2, 4, 5
     public enum SwipeDirection {
         None,
         H, //horizontal
@@ -96,7 +97,8 @@ namespace magic_cube {
             Move m = Move.None;
 
             switch(swipedFace.face){
-                case CubeFace.F: case CubeFace.B:
+                case CubeFace.F:
+                case CubeFace.B:
                     switch(swipedFace.direction){
                         case SwipeDirection.H:
                             switch(swipedFace.layer){
@@ -126,7 +128,8 @@ namespace magic_cube {
                             break;
                     }
                     break;
-                case CubeFace.R: case CubeFace.L:
+                case CubeFace.R: 
+                case CubeFace.L:
                     switch (swipedFace.direction) {
                         case SwipeDirection.H:
                             switch(swipedFace.layer){
@@ -156,7 +159,8 @@ namespace magic_cube {
                             break;
                     }
                     break;
-                case CubeFace.U: case CubeFace.D:
+                case CubeFace.U: 
+                case CubeFace.D:
                     switch (swipedFace.direction) {
                         case SwipeDirection.H:
                             switch (swipedFace.layer) {
@@ -310,7 +314,7 @@ namespace magic_cube {
             return 1;
         }
 
-        private CubeFace getDominantFace(){
+        public CubeFace getDominantFace(){
             Dictionary<CubeFace, int> faceCount = new Dictionary<CubeFace,int>();
             int count;
             foreach(var f in swipedFaces){
