@@ -156,7 +156,6 @@ namespace magic_cube {
             }
         }
 
-        //pass c.possibleMoves
         private HashSet<Move> getNextPossibleMoves(HashSet<Move>moves, Move m, RotationDirection direction){
             //TODO: S M E
              Dictionary<Move, List<List<Move>>> substitutions = new Dictionary<Move, List<List<Move>>> {
@@ -222,26 +221,28 @@ namespace magic_cube {
                 }},
             };
 
-            List<List<Move>> l = new List<List<Move>>(substitutions[Move.F]);
+            List<List<Move>> l = new List<List<Move>>();
+
+            l = substitutions[Move.F];
             foreach (List<Move> item in l)
 	        {
 		        item.Reverse();
 	        }
             substitutions.Add(Move.B, l);
 
-            l = new List<List<Move>>(substitutions[Move.U]);
+            l = substitutions[Move.U];
             foreach (List<Move> item in l) {
                 item.Reverse();
             }
             substitutions.Add(Move.D, l);
 
-            l = new List<List<Move>>(substitutions[Move.L]);
+            l = substitutions[Move.L];
             foreach (List<Move> item in l) {
                 item.Reverse();
             }
             substitutions.Add(Move.R, l);
 
-            foreach (var s in substitutions[m]) {
+            foreach (List<Move> s in substitutions[m]) {
                 if (direction == RotationDirection.ClockWise) {
                     if (moves.Contains(s[0]) && moves.Contains(s[1])) {
                         moves.Remove(s[0]);
