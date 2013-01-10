@@ -75,6 +75,11 @@ namespace magic_cube {
 
         public KeyValuePair<Move, RotationDirection> getMove() {
             KeyValuePair<Move, RotationDirection> retval = new KeyValuePair<Move,RotationDirection>(Move.None, RotationDirection.None);
+            
+            if(swipedFaces.Count < 3){
+                return retval;
+            }
+
             CubeFace f = getDominantFace();
 
             if (f == CubeFace.None) {
