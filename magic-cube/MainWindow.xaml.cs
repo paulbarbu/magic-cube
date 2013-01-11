@@ -30,29 +30,29 @@ namespace magic_cube {
             VeryHard = 40
         }
 
-        //TODO: scramble the cube before the game starts (speed up the animation) + difficulty levels
         //TODO: create a RubikCube instance out of a 2D matrix so I can display the scrambled cube when loading a saved game
         //TODO: animations: enable, disable
 
         Point startMoveCamera;
-        bool allowMoveCamera = false, allowMoveLayer = false;
+        bool allowMoveCamera = false, allowMoveLayer = false, gameOver = false;
+        int size = 3;
+        double edge_len = 1;
+        double space = 0.05;
+        double len;
+
         Transform3DGroup rotations = new Transform3DGroup();
         RubikCube c;
-        bool gameOver = false;
-
+        MyModelVisual3D touchFaces;
         Movement movement = new Movement();
         HashSet<string> touchedFaces = new HashSet<string>();
 
-        private void Window_Loaded(object sender, RoutedEventArgs e) {
-            int size = 3;
-            double edge_len = 1;
-            double space = 0.05;
-            double len = edge_len * size + space * (size - 1);
-            double distanceFactor = 2.3;
-            
-            c = new RubikCube(new Cube2D(size), size, new Point3D(-len / 2, -len / 2, -len / 2), TimeSpan.FromMilliseconds(250), edge_len, space);
-            c.Transform = rotations;
+        string defaultTitle = "Magic Cube - ";
+        Difficulty currentDifficulty = Difficulty.Normal;
 
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
+            double distanceFactor = 2.3;
+            len = edge_len * size + space * (size - 1);
+            
             Point3D cameraPos = new Point3D(len * distanceFactor, len * distanceFactor, len * distanceFactor);
             PerspectiveCamera camera = new PerspectiveCamera(
                 cameraPos,
@@ -62,10 +62,7 @@ namespace magic_cube {
             );
 
             this.mainViewport.Camera = camera;
-            this.mainViewport.Children.Add(c);
-            this.mainViewport.Children.Add(
-                Helpers.createTouchFaces(len, size, rotations, 
-                    new DiffuseMaterial(new SolidColorBrush(Colors.Transparent))));
+            init(currentDifficulty, defaultTitle + "Normal");
         }
 
         private void scramble(Difficulty d) {
@@ -177,9 +174,58 @@ namespace magic_cube {
         }
 
         private void Window_ContentRendered(object sender, EventArgs e) {
-            scramble(Difficulty.Easy);
+            scramble(Difficulty.Normal);
 
             c.animationDuration = TimeSpan.FromMilliseconds(370);
+        }
+
+        private void NewGame_Click(object sender, RoutedEventArgs e) {
+            string d = ((MenuItem)sender).Tag.ToString();
+
+            switch(d){
+                case "Easy":
+                    currentDifficulty = Difficulty.Easy;
+                    break;
+                case "Normal":
+                    currentDifficulty = Difficulty.Normal;
+                    break;
+                case "Hard":
+                    currentDifficulty = Difficulty.Hard;
+                    break;
+                case "Very Hard":
+                    currentDifficulty = Difficulty.VeryHard;
+                    break;
+            }
+
+            init(currentDifficulty, defaultTitle + d);
+        }
+
+        private void Window_KeyUp(object sender, KeyEventArgs e) {
+            if (e.Key == Key.F5) {
+                init(currentDifficulty, this.Title);
+            }
+        }
+
+        private void init(Difficulty d, string title) {
+            this.mainViewport.Children.Remove(c);
+            this.mainViewport.Children.Remove(touchFaces);
+            rotations.Children.Clear();
+
+            c = new RubikCube(new Cube2D(size), size, new Point3D(-len / 2, -len / 2, -len / 2), TimeSpan.FromMilliseconds(250), edge_len, space);
+            c.Transform = rotations;
+
+            touchFaces = Helpers.createTouchFaces(len, size, rotations,
+                    new DiffuseMaterial(new SolidColorBrush(Colors.Transparent)));
+
+            this.mainViewport.Children.Add(c);
+            this.mainViewport.Children.Add(touchFaces);
+
+            scramble(d);
+
+            gameOver = false;
+            c.animationDuration = TimeSpan.FromMilliseconds(370);
+
+            this.Title = title;
         }
     }
 }
