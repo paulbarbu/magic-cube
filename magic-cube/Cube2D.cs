@@ -5,7 +5,7 @@ using System.Text;
 using System.Diagnostics;
 
 namespace magic_cube {
-    class Cube2D {
+    public class Cube2D {
         private int size;
         private CubeFace[,] projection;
         
@@ -97,6 +97,93 @@ namespace magic_cube {
                     ;
                 }
             }
+        }
+
+        public bool isUnscrambled() {
+            return isUnscrambledB() && isUnscrambledD() && isUnscrambledF() && isUnscrambledL() && isUnscrambledR() && isUnscrambledU();
+        }
+
+        private bool isUnscrambledB() {
+            CubeFace f = projection[0, size];
+
+            for (int i = 0; i < size; i++ ) {
+                for (int j = size; j < size * 2; j++) {
+                    if(projection[i,j] != f){
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private bool isUnscrambledD() {
+            CubeFace f = projection[size, size];
+
+            for (int i = size; i < size*2; i++) {
+                for (int j = size; j < size * 2; j++) {
+                    if (projection[i, j] != f) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private bool isUnscrambledF() {
+            CubeFace f = projection[size*2, size];
+
+            for (int i = size*2; i < size*3; i++) {
+                for (int j = size; j < size * 2; j++) {
+                    if (projection[i, j] != f) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private bool isUnscrambledU() {
+            CubeFace f = projection[size*3, size];
+
+            for (int i = size*3; i < size*4; i++) {
+                for (int j = size; j < size * 2; j++) {
+                    if (projection[i, j] != f) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private bool isUnscrambledL() {
+            CubeFace f = projection[size, 0];
+
+            for (int i = size; i < size*2; i++) {
+                for (int j = 0; j < size; j++) {
+                    if (projection[i, j] != f) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private bool isUnscrambledR() {
+            CubeFace f = projection[size, size*2];
+            for (int i = size; i < size * 2; i++) {
+                for (int j = size*2; j < size*3; j++) {
+                    if (projection[i, j] != f) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         private void rotateR(RotationDirection d) {
