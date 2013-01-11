@@ -48,11 +48,13 @@ namespace magic_cube {
         public void rotate(KeyValuePair<Move, RotationDirection> move) {
             switch (move.Key) {
                 case Move.F:
+                case Move.S:
+                    rotateFS(move.Key, move.Value);
                     break;
                 case Move.B:
                     break;
                 case Move.R:
-                    rotateR(move.Key, move.Value);
+                    rotateR(move.Value);
                     break;
                 case Move.L:
                 case Move.M:
@@ -64,11 +66,9 @@ namespace magic_cube {
                     break;
                 case Move.E:
                     break;
-                case Move.S:
-                    break;
             }
         }
-        private void rotateR(Move m, RotationDirection d) {
+        private void rotateR(RotationDirection d) {
             CubeFace t;
             int j = 5;
 
@@ -123,7 +123,7 @@ namespace magic_cube {
             }
 
             int first_lhs = 0, second_lhs = 1, first_rhs = 2, second_rhs = 3;
-
+            /*
             if (d == RotationDirection.CounterClockWise) {
                 first_lhs = 2;
                 second_lhs = 3;
@@ -139,7 +139,8 @@ namespace magic_cube {
             }
 
             projection[substitutions[substitutions.Count - 1][first_lhs], substitutions[substitutions.Count - 1][second_lhs]] =
-                projection[substitutions[substitutions.Count - 1][first_rhs], substitutions[substitutions.Count - 1][second_rhs]];
+                projection[substitutions[substitutions.Count - 1][first_rhs], substitutions[substitutions.Count - 1][second_rhs]];*/
+            rotateFace(substitutions, d);
         }
 
         private void rotateLM(Move m, RotationDirection d) {
@@ -204,7 +205,7 @@ namespace magic_cube {
                 projection[5, j] = t;
             }
 
-            if (m == Move.L) {
+            if (m == Move.L) {/*
                 int first_lhs = 0, second_lhs = 1, first_rhs = 2, second_rhs = 3;
 
                 if (d == RotationDirection.CounterClockWise) {
@@ -222,8 +223,96 @@ namespace magic_cube {
                 }
 
                 projection[substitutions[substitutions.Count - 1][first_lhs], substitutions[substitutions.Count - 1][second_lhs]] =
-                    projection[substitutions[substitutions.Count - 1][first_rhs], substitutions[substitutions.Count - 1][second_rhs]];
+                    projection[substitutions[substitutions.Count - 1][first_rhs], substitutions[substitutions.Count - 1][second_rhs]];*/
+
+                rotateFace(substitutions, d);
             }
+        }
+
+        private void rotateFS(Move m, RotationDirection d) {
+            CubeFace t;
+            int i1 = 5, i2 = 9;
+
+            List<List<int>> substitutions = new List<List<int>> {
+                new List<int>{6, 3, 6, 5},
+                new List<int>{6, 5, 8, 5},
+                new List<int>{8, 5, 8, 3},
+                new List<int>{8, 3, 6, 3},
+                new List<int>{6, 4, 7, 5},
+                new List<int>{7, 5, 8, 4},
+                new List<int>{8, 4, 7, 3},
+                new List<int>{7, 3, 6, 4},
+            };
+
+            if (m == Move.S) {
+                i1 = 4;
+                i2 = 10;
+            }
+
+            if (d == RotationDirection.ClockWise) {
+                t = projection[i1, 5];
+                projection[i1, 5] = projection[i1, 8];
+                projection[i1, 8] = projection[i2, 3];
+                projection[i2, 3] = projection[i1, 2];
+                projection[i1, 2] = t;
+
+                t = projection[i1, 4];
+                projection[i1, 4] = projection[i1, 7];
+                projection[i1, 7] = projection[i2, 4];
+                projection[i2, 4] = projection[i1, 1];
+                projection[i1, 1] = t;
+
+                t = projection[i1, 3];
+                projection[i1, 3] = projection[i1, 6];
+                projection[i1, 6] = projection[i2, 5];
+                projection[i2, 5] = projection[i1, 0];
+                projection[i1, 0] = t;
+            }
+            else {
+                t = projection[i1, 8];
+                projection[i1, 8] = projection[i1, 5];
+                projection[i1, 5] = projection[i1, 2];
+                projection[i1, 2] = projection[i2, 3];
+                projection[i2, 3] = t;
+
+                t = projection[i1, 7];
+                projection[i1, 7] = projection[i1, 4];
+                projection[i1, 4] = projection[i1, 1];
+                projection[i1, 1] = projection[i2, 4];
+                projection[i2, 4] = t;
+
+                t = projection[i1, 6];
+                projection[i1, 6] = projection[i1, 3];
+                projection[i1, 3] = projection[i1, 0];
+                projection[i1, 0] = projection[i2, 5];
+                projection[i2, 5] = t;
+            }
+
+            if(m == Move.F){
+                rotateFace(substitutions, d);
+            }
+        }
+
+        private void rotateFace(List<List<int>> substitutions, RotationDirection d) {
+            CubeFace t;
+            int first_lhs = 0, second_lhs = 1, first_rhs = 2, second_rhs = 3;
+
+            if (d == RotationDirection.CounterClockWise) {
+                first_lhs = 2;
+                second_lhs = 3;
+
+                first_rhs = 0;
+                second_rhs = 1;
+            }
+
+            t = projection[substitutions[0][first_lhs], substitutions[0][second_lhs]];
+
+            for (int i = 0; i < substitutions.Count - 1; i++) {
+                projection[substitutions[i][first_lhs], substitutions[i][second_lhs]] = projection[substitutions[i][first_rhs], substitutions[i][second_rhs]];
+            }
+
+            projection[substitutions[substitutions.Count - 1][first_lhs], substitutions[substitutions.Count - 1][second_lhs]] =
+                projection[substitutions[substitutions.Count - 1][first_rhs], substitutions[substitutions.Count - 1][second_rhs]];
         }
 
         public void dbg(){
