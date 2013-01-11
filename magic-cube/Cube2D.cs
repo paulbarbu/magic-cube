@@ -62,10 +62,13 @@ namespace magic_cube {
                     rotateLM(move.Key, move.Value);
                     break;
                 case Move.U:
+                    rotateU(move.Value);
                     break;
                 case Move.D:
+                    rotateD(move.Value);
                     break;
                 case Move.E:
+                    rotateE(move.Value);
                     break;
             }
         }
@@ -309,6 +312,161 @@ namespace magic_cube {
                 projection[3, 4] = projection[3, 7];
                 projection[3, 7] = projection[11, 4];
                 projection[11, 4] = t;
+            }
+
+            rotateFace(substitutions, d);
+        }
+
+        private void rotateD(RotationDirection d) {
+            CubeFace t;
+
+            List<List<int>> substitutions = new List<List<int>> {
+                new List<int>{3, 3, 3, 5},
+                new List<int>{3, 5, 5, 5},
+                new List<int>{5, 5, 5, 3},
+                new List<int>{5, 3, 3, 3},
+                new List<int>{3, 4, 4, 5},
+                new List<int>{4, 5, 5, 4},
+                new List<int>{5, 4, 4, 3},
+                new List<int>{4, 3, 3, 4},
+            };
+
+            if (d == RotationDirection.ClockWise) {
+                t = projection[3, 2];
+                projection[3, 2] = projection[2, 5];
+                projection[2, 5] = projection[5, 6];
+                projection[5, 6] = projection[6, 3];
+                projection[6, 3] = t;
+
+                t = projection[4, 2];
+                projection[4, 2] = projection[2, 4];
+                projection[2, 4] = projection[4, 6];
+                projection[4, 6] = projection[6, 4];
+                projection[6, 4] = t;
+
+                t = projection[5, 2];
+                projection[5, 2] = projection[2, 3];
+                projection[2, 3] = projection[3, 6];
+                projection[3, 6] = projection[6, 5];
+                projection[6, 5] = t;
+            }
+            else {
+                t = projection[2, 5];
+                projection[2, 5] = projection[3, 2];
+                projection[3, 2] = projection[6, 3];
+                projection[6, 3] = projection[5, 6];
+                projection[5, 6] = t;
+
+                t = projection[2, 4];
+                projection[2, 4] = projection[4, 2];
+                projection[4, 2] = projection[6, 4];
+                projection[6, 4] = projection[4, 6];
+                projection[4, 6] = t;
+
+                t = projection[5, 2];
+                projection[5, 2] = projection[6, 5];
+                projection[6, 5] = projection[3, 6];
+                projection[3, 6] = projection[2, 3];
+                projection[2, 3] = t;
+            }
+
+            rotateFace(substitutions, d);
+        }
+
+        private void rotateE(RotationDirection d) {
+            CubeFace t;
+
+            if (d == RotationDirection.ClockWise) {
+                t = projection[3, 1];
+                projection[3, 1] = projection[1, 5];
+                projection[1, 5] = projection[5, 7];
+                projection[5, 7] = projection[7, 3];
+                projection[7, 3] = t;
+
+                t = projection[4, 1];
+                projection[4, 1] = projection[1, 4];
+                projection[1, 4] = projection[4, 7];
+                projection[4, 7] = projection[7, 4];
+                projection[7, 4] = t;
+
+                t = projection[5, 1];
+                projection[5, 1] = projection[1, 3];
+                projection[1, 3] = projection[3, 7];
+                projection[3, 7] = projection[7, 5];
+                projection[7, 5] = t;
+            }
+            else {
+                t = projection[1, 5];
+                projection[1, 5] = projection[3, 1];
+                projection[3, 1] = projection[7, 3];
+                projection[7, 3] = projection[5, 7];
+                projection[5, 7] = t;
+
+                t = projection[1, 4];
+                projection[1, 4] = projection[4, 1];
+                projection[4, 1] = projection[7, 4];
+                projection[7, 4] = projection[4, 7];
+                projection[4, 7] = t;
+
+                t = projection[5, 1];
+                projection[5, 1] = projection[7, 5];
+                projection[7, 5] = projection[3, 7];
+                projection[3, 7] = projection[1, 3];
+                projection[1, 3] = t;
+            }
+        }
+
+        private void rotateU(RotationDirection d) {
+            CubeFace t;
+
+            List<List<int>> substitutions = new List<List<int>> {
+                new List<int>{9, 3, 9, 5},
+                new List<int>{9, 5, 11, 5},
+                new List<int>{11, 5, 11, 3},
+                new List<int>{11, 3, 9, 3},
+                new List<int>{9, 4, 10, 5},
+                new List<int>{10, 5, 11, 4},
+                new List<int>{11, 4, 10, 3},
+                new List<int>{10, 3, 9, 4},
+            };
+
+            if (d == RotationDirection.ClockWise) {
+                t = projection[3, 0];
+                projection[3, 0] = projection[8, 3];
+                projection[8, 3] = projection[5, 8];
+                projection[5, 8] = projection[0, 5];
+                projection[0, 5] = t;
+
+                t = projection[4, 0];
+                projection[4, 0] = projection[8, 4];
+                projection[8, 4] = projection[4, 8];
+                projection[4, 8] = projection[0, 4];
+                projection[0, 4] = t;
+
+                t = projection[5, 0];
+                projection[5, 0] = projection[8, 5];
+                projection[8, 5] = projection[3, 8];
+                projection[3, 8] = projection[0, 3];
+                projection[0, 3] = t;
+            }
+            else {
+                t = projection[3, 0];
+                projection[3, 0] = projection[0, 5];
+                projection[0, 5] = projection[5, 8];
+                projection[5, 8] = projection[8, 3];
+                projection[8, 3] = t;
+
+                t = projection[4, 0];
+                projection[4, 0] = projection[0, 4];
+                projection[0, 4] = projection[4, 8];
+                projection[4, 8] = projection[8, 4];
+                projection[8, 4] = t;
+
+                t = projection[5, 0];
+                projection[5, 0] = projection[0, 3];
+                projection[0, 3] = projection[3, 8];
+                projection[3, 8] = projection[8, 5];
+                projection[8, 5] = t;
             }
 
             rotateFace(substitutions, d);
