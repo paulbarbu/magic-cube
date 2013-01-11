@@ -1,7 +1,7 @@
 ﻿<Window x:Class="magic_cube.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Magic Cube" Height="350" Width="525" Loaded="Window_Loaded" MouseMove="Window_MouseMove" MouseRightButtonDown="Window_MouseRightButtonDown" MouseRightButtonUp="Window_MouseRightButtonUp" MouseLeftButtonDown="Window_MouseLeftButtonDown" MouseLeftButtonUp="Window_MouseLeftButtonUp" WindowStartupLocation="CenterScreen">
+    Title="Magic Cube" Height="350" Width="525" Loaded="Window_Loaded" MouseMove="Window_MouseMove" MouseRightButtonDown="Window_MouseRightButtonDown" MouseRightButtonUp="Window_MouseRightButtonUp" MouseLeftButtonDown="Window_MouseLeftButtonDown" MouseLeftButtonUp="Window_MouseLeftButtonUp" WindowStartupLocation="CenterScreen" ContentRendered="Window_ContentRendered">
 <Grid>
     <Border Background="#FF3E837E">
     <Viewport3D Name="mainViewport" ClipToBounds="True">
@@ -17,5 +17,5 @@
     </ModelVisual3D>
     </Viewport3D>
     </Border >
-</Grid>
+    </Grid>
 </Window>

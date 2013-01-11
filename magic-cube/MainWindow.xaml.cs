@@ -23,14 +23,22 @@ namespace magic_cube {
             InitializeComponent();
         }
 
-        //TODO: project the cube to a 2d matrix where I'll check if the puzzle is solved and where I will scramble the cube before the game starts
-        //TODO: create a RubikCube instance out of a 2D matrix so I can display the scrambled cube
+        private enum Difficulty {
+            Easy = 10,
+            Normal = 20,
+            Hard = 30,
+            VeryHard = 40
+        }
+
+        //TODO: scramble the cube before the game starts (speed up the animation) + difficulty levels
+        //TODO: create a RubikCube instance out of a 2D matrix so I can display the scrambled cube when loading a saved game
+        //TODO: animations: enable, disable
 
         Point startMoveCamera;
         bool allowMoveCamera = false, allowMoveLayer = false;
         Transform3DGroup rotations = new Transform3DGroup();
         RubikCube c;
-        Cube2D cProjection;
+        bool gameOver = false;
 
         Movement movement = new Movement();
         HashSet<string> touchedFaces = new HashSet<string>();
@@ -41,10 +49,8 @@ namespace magic_cube {
             double space = 0.05;
             double len = edge_len * size + space * (size - 1);
             double distanceFactor = 2.3;
-
-            cProjection = new Cube2D(size);
-
-            c = new RubikCube(size, new Point3D(-len / 2, -len / 2, -len / 2), edge_len, space);
+            
+            c = new RubikCube(new Cube2D(size), size, new Point3D(-len / 2, -len / 2, -len / 2), TimeSpan.FromMilliseconds(250), edge_len, space);
             c.Transform = rotations;
 
             Point3D cameraPos = new Point3D(len * distanceFactor, len * distanceFactor, len * distanceFactor);
@@ -60,6 +66,36 @@ namespace magic_cube {
             this.mainViewport.Children.Add(
                 Helpers.createTouchFaces(len, size, rotations, 
                     new DiffuseMaterial(new SolidColorBrush(Colors.Transparent))));
+        }
+
+        private void scramble(Difficulty d) {
+            Random r = new Random();
+            RotationDirection direction;
+            List<KeyValuePair<Move, CubeFace>> moves = new List<KeyValuePair<Move, CubeFace>>{
+                {new KeyValuePair<Move, CubeFace>(Move.B, CubeFace.R)},
+                {new KeyValuePair<Move, CubeFace>(Move.D, CubeFace.R)},
+                {new KeyValuePair<Move, CubeFace>(Move.E, CubeFace.R)},
+                {new KeyValuePair<Move, CubeFace>(Move.F, CubeFace.R)},
+                {new KeyValuePair<Move, CubeFace>(Move.L, CubeFace.F)},
+                {new KeyValuePair<Move, CubeFace>(Move.M, CubeFace.F)},
+                {new KeyValuePair<Move, CubeFace>(Move.R, CubeFace.F)},
+                {new KeyValuePair<Move, CubeFace>(Move.S, CubeFace.R)},
+                {new KeyValuePair<Move, CubeFace>(Move.U, CubeFace.F)},
+            };    
+
+            for (int i = 0; i < (int)d; i++ ) {
+                int index = r.Next(0, moves.Count);
+                                
+                if (r.Next(0, 101) == 0) {
+                    direction = RotationDirection.ClockWise;
+                }
+                else {
+                    direction = RotationDirection.CounterClockWise;
+                }
+
+                Debug.Print("Move: {0} {1}", moves[index].Key.ToString(), direction.ToString());
+                c.rotate(new KeyValuePair<Move, RotationDirection>(moves[index].Key, direction), moves[index].Value);
+            }
         }
 
         private void Window_MouseRightButtonDown(object sender, MouseButtonEventArgs e) {
@@ -119,18 +155,31 @@ namespace magic_cube {
             allowMoveLayer = false;
             movement.TouchedFaces = touchedFaces;
 
+            if (gameOver) {
+                return;
+            }
+
             KeyValuePair<Move, RotationDirection> m = movement.getMove();
 
             if (m.Key != Move.None) {
                 c.rotate(m, movement.getDominantFace());
-                cProjection.rotate(m);
-                cProjection.dbg();
             }
             else {
                 Debug.Print("Invalid move!");
             }
 
+            if (c.isUnscrambled()) {
+                Debug.Print("!!!!! GAME OVER !!!!!");
+                gameOver = true;
+            }
+
             Debug.Print("\n");
+        }
+
+        private void Window_ContentRendered(object sender, EventArgs e) {
+            scramble(Difficulty.Easy);
+
+            c.animationDuration = TimeSpan.FromMilliseconds(370);
         }
     }
 }

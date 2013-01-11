@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Diagnostics;
 using System.Windows;
+using System.Threading;
 
 namespace magic_cube {
     public class RubikCube : Cube {
