@@ -30,6 +30,7 @@ namespace magic_cube {
         bool allowMoveCamera = false, allowMoveLayer = false;
         Transform3DGroup rotations = new Transform3DGroup();
         RubikCube c;
+        Cube2D cProjection;
 
         Movement movement = new Movement();
         HashSet<string> touchedFaces = new HashSet<string>();
@@ -41,9 +42,7 @@ namespace magic_cube {
             double len = edge_len * size + space * (size - 1);
             double distanceFactor = 2.3;
 
-            Cube2D cubeProjection = new Cube2D(size);
-            //cubeProjection.rotate(new KeyValuePair<Move, RotationDirection>(Move.M, RotationDirection.ClockWise));
-            //cubeProjection.dbg();
+            cProjection = new Cube2D(size);
 
             c = new RubikCube(size, new Point3D(-len / 2, -len / 2, -len / 2), edge_len, space);
             c.Transform = rotations;
@@ -124,6 +123,8 @@ namespace magic_cube {
 
             if (m.Key != Move.None) {
                 c.rotate(m, movement.getDominantFace());
+                cProjection.rotate(m);
+                cProjection.dbg();
             }
             else {
                 Debug.Print("Invalid move!");
