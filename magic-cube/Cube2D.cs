@@ -71,6 +71,32 @@ namespace magic_cube {
                     rotateE(move.Value);
                     break;
             }
+
+            Dictionary<CubeFace, int> ct = new Dictionary<CubeFace,int>{
+                {CubeFace.L, 0},
+                {CubeFace.D, 0},
+                {CubeFace.R, 0},
+                {CubeFace.B, 0},
+                {CubeFace.F, 0},
+                {CubeFace.U, 0},
+                {CubeFace.None, 0},
+            };
+            for (int i = 0; i < size * 4; i++) {
+                for (int j = 0; j < size * 3; j++ ) {
+                    ct[projection[i, j]]++;
+                }
+            }
+
+            foreach (var f in ct) {
+                if(f.Key == CubeFace.None && f.Value != 54){
+                    Debug.Assert(f.Value == 54);
+                    ;
+                }
+                else if(f.Value != 9 && f.Key != CubeFace.None){
+                    Debug.Assert(f.Value == 9);
+                    ;
+                }
+            }
         }
 
         private void rotateR(RotationDirection d) {
@@ -473,7 +499,8 @@ namespace magic_cube {
         }
 
         private void rotateFace(List<List<int>> substitutions, RotationDirection d) {
-            CubeFace t;
+            CubeFace[,] current = (CubeFace[,])projection.Clone();
+
             int first_lhs = 0, second_lhs = 1, first_rhs = 2, second_rhs = 3;
 
             if (d == RotationDirection.CounterClockWise) {
@@ -484,14 +511,9 @@ namespace magic_cube {
                 second_rhs = 1;
             }
 
-            t = projection[substitutions[0][first_lhs], substitutions[0][second_lhs]];
-
-            for (int i = 0; i < substitutions.Count - 1; i++) {
-                projection[substitutions[i][first_lhs], substitutions[i][second_lhs]] = projection[substitutions[i][first_rhs], substitutions[i][second_rhs]];
+            foreach(List<int> s in substitutions){
+                projection[s[first_lhs], s[second_lhs]] = current[s[first_rhs], s[second_rhs]];
             }
-
-            projection[substitutions[substitutions.Count - 1][first_lhs], substitutions[substitutions.Count - 1][second_lhs]] =
-                projection[substitutions[substitutions.Count - 1][first_rhs], substitutions[substitutions.Count - 1][second_rhs]];
         }
 
         public void dbg(){
