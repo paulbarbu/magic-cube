@@ -26,12 +26,17 @@ namespace magic_cube {
         /// Space between the cubes forming the bigger cube
         /// </summary>
         private double space;
+
+        private Cube2D projection;
+        public TimeSpan animationDuration;
         
-        public RubikCube(int size, Point3D o, double len = 1, double space = 0.1) {
+        public RubikCube(Cube2D projection, int size, Point3D o, TimeSpan duration, double len = 1, double space = 0.1) {
             this.size = size;
             this.origin = o;
             this.edge_len = len;
             this.space = space;
+            this.projection = projection;
+            this.animationDuration = duration;
 
             createCube();
         }
@@ -160,14 +165,20 @@ namespace magic_cube {
 
                     AxisAngleRotation3D rotation = new AxisAngleRotation3D(axis, angle);
                     RotateTransform3D transform = new RotateTransform3D(rotation, new Point3D(0, 0, 0));
-                    
-                    DoubleAnimation animation = new DoubleAnimation(0, angle, TimeSpan.FromMilliseconds(370));                                       
+
+                    DoubleAnimation animation = new DoubleAnimation(0, angle, animationDuration); 
                     rotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, animation);
 
-                    c.rotations.Children.Add(transform);       
+                    c.rotations.Children.Add(transform);
                 }
             }
+
+            projection.rotate(move);
+            //projection.dbg();
+            
             /*
+            Debug.Print(projection.isUnscrambled().ToString());
+            
             Debug.Print("No. cubes selected: " + ct);
 
             if(move.Key == Move.S || move.Key == Move.M || move.Key == Move.E){
@@ -326,6 +337,10 @@ namespace magic_cube {
             }
             */
             return moves;
+        }
+
+        public bool isUnscrambled() {
+            return projection.isUnscrambled();
         }
 
         private Dictionary<CubeFace, Material> setFaceColors(int x, int y, int z){
