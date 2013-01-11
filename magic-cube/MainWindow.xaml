@@ -4,13 +4,19 @@
     Title="Magic Cube" Height="350" Width="525" Loaded="Window_Loaded" MouseMove="Window_MouseMove" MouseRightButtonDown="Window_MouseRightButtonDown" MouseRightButtonUp="Window_MouseRightButtonUp" MouseLeftButtonDown="Window_MouseLeftButtonDown" MouseLeftButtonUp="Window_MouseLeftButtonUp" WindowStartupLocation="CenterScreen" ContentRendered="Window_ContentRendered" KeyUp="Window_KeyUp">
 <Grid>
     <Menu IsMainMenu="True">
-        <MenuItem Header="New Game">
-            <MenuItem Header="Easy" Click="NewGame_Click" Tag="Easy" />
-            <MenuItem Header="Normal" Click="NewGame_Click" Tag="Normal" />
-            <MenuItem Header="Hard" Click="NewGame_Click" Tag="Hard"  />
-            <MenuItem Header="Very Hard" Click="NewGame_Click" Tag="Very Hard"  />
+        <MenuItem Header="_File">
+            <MenuItem Header="Animations" IsCheckable="True" IsChecked="True" Name="enableAnimations" Checked="enableAnimations_Checked" Unchecked="enableAnimations_Unchecked" />
+            <Separator />
+            <MenuItem Header="Save" Name="saveMenu"/>
+            <MenuItem Header="Load" />
         </MenuItem>
-    </Menu>
+        <MenuItem Header="_New Game">
+        <MenuItem Header="Easy" Click="NewGame_Click" Tag="Easy" />
+        <MenuItem Header="Normal" Click="NewGame_Click" Tag="Normal" />
+        <MenuItem Header="Hard" Click="NewGame_Click" Tag="Hard"  />
+        <MenuItem Header="Very Hard" Click="NewGame_Click" Tag="Very Hard"  />
+    </MenuItem>
+        </Menu>
     <Viewport3D Name="mainViewport" ClipToBounds="True">
     <ModelVisual3D>
         <ModelVisual3D.Content>

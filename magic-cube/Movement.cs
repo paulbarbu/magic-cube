@@ -95,7 +95,7 @@ namespace magic_cube {
 
             SwipedFace swipedFace = getSingleSwipedFace(dir);
         
-            Debug.Print("face: {0}{1}{2}", swipedFace.face, swipedFace.direction, swipedFace.layer);
+            //Debug.Print("face: {0}{1}{2}", swipedFace.face, swipedFace.direction, swipedFace.layer);
 
             Move m = Move.None;
 

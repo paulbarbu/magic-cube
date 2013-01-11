@@ -31,7 +31,6 @@ namespace magic_cube {
         }
 
         //TODO: create a RubikCube instance out of a 2D matrix so I can display the scrambled cube when loading a saved game
-        //TODO: animations: enable, disable
 
         Point startMoveCamera;
         bool allowMoveCamera = false, allowMoveLayer = false, gameOver = false;
@@ -62,7 +61,6 @@ namespace magic_cube {
             );
 
             this.mainViewport.Camera = camera;
-            init(currentDifficulty, defaultTitle + "Normal");
         }
 
         private void scramble(Difficulty d) {
@@ -165,18 +163,17 @@ namespace magic_cube {
                 Debug.Print("Invalid move!");
             }
 
-            if (c.isUnscrambled()) {
-                Debug.Print("!!!!! GAME OVER !!!!!");
+            if (c.isUnscrambled()) {                
                 gameOver = true;
+                saveMenu.IsEnabled = false;
+                Debug.Print("!!!!! GAME OVER !!!!!");
             }
 
             Debug.Print("\n");
         }
 
         private void Window_ContentRendered(object sender, EventArgs e) {
-            scramble(Difficulty.Normal);
-
-            c.animationDuration = TimeSpan.FromMilliseconds(370);
+            init(currentDifficulty, defaultTitle + "Normal");
         }
 
         private void NewGame_Click(object sender, RoutedEventArgs e) {
@@ -211,6 +208,7 @@ namespace magic_cube {
             this.mainViewport.Children.Remove(touchFaces);
             rotations.Children.Clear();
 
+
             c = new RubikCube(new Cube2D(size), size, new Point3D(-len / 2, -len / 2, -len / 2), TimeSpan.FromMilliseconds(250), edge_len, space);
             c.Transform = rotations;
 
@@ -220,12 +218,33 @@ namespace magic_cube {
             this.mainViewport.Children.Add(c);
             this.mainViewport.Children.Add(touchFaces);
 
+
+            if (!enableAnimations.IsChecked) {
+                c.animationDuration = TimeSpan.FromMilliseconds(0);
+            }
+
             scramble(d);
 
+            if (enableAnimations.IsChecked) {                
+                c.animationDuration = TimeSpan.FromMilliseconds(370);
+            }
+
             gameOver = false;
-            c.animationDuration = TimeSpan.FromMilliseconds(370);
 
             this.Title = title;
+            saveMenu.IsEnabled = true;
+        }
+
+        private void enableAnimations_Checked(object sender, RoutedEventArgs e) {
+            if(c != null){
+                c.animationDuration = TimeSpan.FromMilliseconds(370);
+            }
+        }
+
+        private void enableAnimations_Unchecked(object sender, RoutedEventArgs e) {
+            if (c != null) {
+                c.animationDuration = TimeSpan.FromMilliseconds(0);
+            }
         }
     }
 }
