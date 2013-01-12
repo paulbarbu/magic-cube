@@ -3,16 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
+using System.IO;
 
 namespace magic_cube {
     public class Cube2D {
         private int size;
-        private CubeFace[,] projection;
+        public CubeFace[,] projection{get; private set;}
         
         public Cube2D(int size) {
             this.size = size;
             this.projection = new CubeFace[size*4,size*3];
             createCube();
+        }
+
+        public Cube2D(int size, string fileName) {
+            this.size = size;
+            this.projection = new CubeFace[size * 4, size * 3];
+            readCube(fileName);
+        }
+
+        private void readCube(string fileName) {
+            using(StreamReader r = new StreamReader(fileName)){
+                for (int i = 0; i < size * 4; i++) {
+                    string[] line = r.ReadLine().Split(' ');
+                    for(int j = 0; j < size * 3; j++){
+                        projection[i, j] = (CubeFace)Enum.Parse(typeof(CubeFace), line[j]);
+                    }
+                }
+            }
+
+            ;//TODO: check for errors
+            dbg();
         }
 
         private void createCube(){

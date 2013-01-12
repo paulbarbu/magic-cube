@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Media.Media3D;
 using System.Diagnostics;
+using System.IO;
 
 namespace magic_cube {
     /// <summary>
@@ -31,7 +32,7 @@ namespace magic_cube {
         }
 
         //TODO: create a RubikCube instance out of a 2D matrix so I can display the scrambled cube when loading a saved game
-
+        //TODO: upon save also save the current difficulty
         Point startMoveCamera;
         bool allowMoveCamera = false, allowMoveLayer = false, gameOver = false;
         int size = 3;
@@ -203,13 +204,19 @@ namespace magic_cube {
             }
         }
 
-        private void init(Difficulty d, string title) {
+        private void init(Difficulty d, string title, string file=null) {
             this.mainViewport.Children.Remove(c);
             this.mainViewport.Children.Remove(touchFaces);
             rotations.Children.Clear();
 
 
-            c = new RubikCube(new Cube2D(size), size, new Point3D(-len / 2, -len / 2, -len / 2), TimeSpan.FromMilliseconds(250), edge_len, space);
+            if (file != null) {
+                c = new RubikCube(file, size, new Point3D(-len / 2, -len / 2, -len / 2), TimeSpan.FromMilliseconds(370), edge_len, space);
+            }
+            else{
+                c = new RubikCube(size, new Point3D(-len / 2, -len / 2, -len / 2), TimeSpan.FromMilliseconds(370), edge_len, space);
+            }
+
             c.Transform = rotations;
 
             touchFaces = Helpers.createTouchFaces(len, size, rotations,
@@ -223,10 +230,8 @@ namespace magic_cube {
                 c.animationDuration = TimeSpan.FromMilliseconds(0);
             }
 
-            scramble(d);
-
-            if (enableAnimations.IsChecked) {                
-                c.animationDuration = TimeSpan.FromMilliseconds(370);
+            if (file == null) {
+                scramble(d);
             }
 
             gameOver = false;
@@ -245,6 +250,17 @@ namespace magic_cube {
             if (c != null) {
                 c.animationDuration = TimeSpan.FromMilliseconds(0);
             }
+        }
+
+        //TODO: show a load/save dialog
+        private void saveMenu_Click(object sender, RoutedEventArgs e) {
+            c.save();
+        }
+
+        private void loadMenu_Click(object sender, RoutedEventArgs e) {
+            init(Difficulty.Easy, defaultTitle.TrimEnd(new char[]{' ', '-'}), "abc");
+
+            //TODO: check for solved cube
         }
     }
 }

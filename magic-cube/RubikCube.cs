@@ -8,6 +8,7 @@ using System.Windows.Media.Animation;
 using System.Diagnostics;
 using System.Windows;
 using System.Threading;
+using System.IO;
 
 namespace magic_cube {
     public class RubikCube : Cube {
@@ -40,15 +41,54 @@ namespace magic_cube {
             {CubeFace.F, new DiffuseMaterial(new SolidColorBrush(Colors.Blue))}
         };
         
-        public RubikCube(Cube2D projection, int size, Point3D o, TimeSpan duration, double len = 1, double space = 0.1) {
+        public RubikCube(int size, Point3D o, TimeSpan duration, double len = 1, double space = 0.1) {
             this.size = size;
             this.origin = o;
             this.edge_len = len;
             this.space = space;
-            this.projection = projection;
+            this.projection = new Cube2D(size);
             this.animationDuration = duration;
 
             createCube();
+        }
+
+        public RubikCube(string fileName, int size, Point3D o, TimeSpan duration, double len = 1, double space = 0.1) {
+            this.size = size;
+            this.origin = o;
+            this.edge_len = len;
+            this.space = space;
+            this.projection = new Cube2D(size, fileName);
+            this.animationDuration = duration;
+
+            createCubeFromProjection();
+        }
+
+        private void createCubeFromProjection() {
+            Cube c;
+            Dictionary<CubeFace, Material> colors;
+
+            double x_offset, y_offset, z_offset;
+
+            for (int y = 0; y < size; y++) {
+                for (int z = 0; z < size; z++) {
+                    for (int x = 0; x < size; x++) {
+                        if (y == 1 && x == 1 && z == 1) {
+                            continue;
+                        }
+
+                        x_offset = (edge_len + space) * x;
+                        y_offset = (edge_len + space) * y;
+                        z_offset = (edge_len + space) * z;
+
+                        Point3D p = new Point3D(origin.X + x_offset, origin.Y + y_offset, origin.Z + z_offset);
+
+                        colors = setFaceColorsFromProjection(x, y, z, projection.projection);
+
+                        c = new Cube(p, edge_len, colors, getPossibleMoves(x, y, z));
+                        this.Children.Add(c);
+                    }
+                }
+            }
         }
 
         protected override void createCube() {
@@ -505,6 +545,17 @@ namespace magic_cube {
             };
 
             return colors[new Tuple<int, int, int>(x, y, z)];
+        }
+
+        public void save() {
+            using (StreamWriter f = new StreamWriter("abc")) {
+                for (int i = 0; i < size * 4; i++) {
+                    for (int j = 0; j < size * 3; j++) {
+                        f.Write(projection.projection[i, j].ToString() + " ");
+                    }
+                    f.WriteLine();
+                }
+            }
         }
     }
 }
