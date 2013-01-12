@@ -408,8 +408,8 @@ namespace magic_cube {
                     {CubeFace.D, faceColors[p[4,4]]},
                 }},
                 {new Tuple<int, int, int>(2, 0, 1), new Dictionary<CubeFace, Material>{
-                    {CubeFace.R, faceColors[p[4,5]]},
-                    {CubeFace.D, faceColors[p[4,6]]},
+                    {CubeFace.R, faceColors[p[4,6]]},
+                    {CubeFace.D, faceColors[p[4,5]]},
                 }},
 
                 {new Tuple<int, int, int>(0, 0, 2), new Dictionary<CubeFace, Material>{
