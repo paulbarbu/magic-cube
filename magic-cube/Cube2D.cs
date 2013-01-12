@@ -25,15 +25,56 @@ namespace magic_cube {
         private void readCube(string fileName) {
             using(StreamReader r = new StreamReader(fileName)){
                 for (int i = 0; i < size * 4; i++) {
-                    string[] line = r.ReadLine().Split(' ');
+                    string[] line = null;
+                    try {
+                        line = r.ReadLine().Split(' ');
+                    }
+                    catch (NullReferenceException e) {
+                        throw new InvalidDataException();
+                    }
                     for(int j = 0; j < size * 3; j++){
-                        projection[i, j] = (CubeFace)Enum.Parse(typeof(CubeFace), line[j]);
+                        try {
+                            projection[i, j] = (CubeFace)Enum.Parse(typeof(CubeFace), line[j]);
+                        }
+                        catch (ArgumentException) {
+                            throw new InvalidDataException();
+                        }
+                        catch (IndexOutOfRangeException) {
+                            throw new InvalidDataException();
+                        }
                     }
                 }
             }
 
-            ;//TODO: check for errors
-            dbg();
+            if(!isValidProjection()){                
+                throw new InvalidDataException();
+            }
+        }
+
+        private bool isValidProjection() {
+            Dictionary<CubeFace, int> ct = new Dictionary<CubeFace, int>{
+                {CubeFace.L, 0},
+                {CubeFace.D, 0},
+                {CubeFace.R, 0},
+                {CubeFace.B, 0},
+                {CubeFace.F, 0},
+                {CubeFace.U, 0},
+                {CubeFace.None, 0},
+            };
+
+            for (int i = 0; i < size * 4; i++) {
+                for (int j = 0; j < size * 3; j++) {
+                    ct[projection[i, j]]++;
+                }
+            }
+
+            foreach (var f in ct) {
+                if (f.Value != 9 && f.Key != CubeFace.None) {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private void createCube(){
@@ -91,32 +132,6 @@ namespace magic_cube {
                 case Move.E:
                     rotateE(move.Value);
                     break;
-            }
-
-            Dictionary<CubeFace, int> ct = new Dictionary<CubeFace,int>{
-                {CubeFace.L, 0},
-                {CubeFace.D, 0},
-                {CubeFace.R, 0},
-                {CubeFace.B, 0},
-                {CubeFace.F, 0},
-                {CubeFace.U, 0},
-                {CubeFace.None, 0},
-            };
-            for (int i = 0; i < size * 4; i++) {
-                for (int j = 0; j < size * 3; j++ ) {
-                    ct[projection[i, j]]++;
-                }
-            }
-
-            foreach (var f in ct) {
-                if(f.Key == CubeFace.None && f.Value != 54){
-                    Debug.Assert(f.Value == 54);
-                    ;
-                }
-                else if(f.Value != 9 && f.Key != CubeFace.None){
-                    Debug.Assert(f.Value == 9);
-                    ;
-                }
             }
         }
 

@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.Windows.Media.Media3D;
 using System.Diagnostics;
 using System.IO;
+using Microsoft.Win32;
 
 namespace magic_cube {
     /// <summary>
@@ -24,6 +25,8 @@ namespace magic_cube {
             InitializeComponent();
         }
 
+        //TODO: implement those different sizes
+
         private enum Difficulty {
             Easy = 10,
             Normal = 20,
@@ -31,8 +34,6 @@ namespace magic_cube {
             VeryHard = 40
         }
 
-        //TODO: create a RubikCube instance out of a 2D matrix so I can display the scrambled cube when loading a saved game
-        //TODO: upon save also save the current difficulty
         Point startMoveCamera;
         bool allowMoveCamera = false, allowMoveLayer = false, gameOver = false;
         int size = 3;
@@ -252,15 +253,36 @@ namespace magic_cube {
             }
         }
 
-        //TODO: show a load/save dialog
         private void saveMenu_Click(object sender, RoutedEventArgs e) {
-            c.save();
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.FileName = DateTime.Now.ToString("dd-MM-yy Hmm");
+            dlg.DefaultExt = ".rubik";
+            dlg.Filter = "Magic Cube Save Files (.rubik)|*.rubik";
+
+            if (true == dlg.ShowDialog()) {
+                c.save(dlg.FileName);
+            }
         }
 
         private void loadMenu_Click(object sender, RoutedEventArgs e) {
-            init(Difficulty.Easy, defaultTitle.TrimEnd(new char[]{' ', '-'}), "abc");
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.DefaultExt = ".rubik";
+            dlg.Filter = "Magic Cube Save Files (.rubik)|*.rubik";
 
-            //TODO: check for solved cube
+            if (true == dlg.ShowDialog()) {
+                try {
+                    init(currentDifficulty, defaultTitle.TrimEnd(new char[] { ' ', '-' }), dlg.FileName);
+                }
+                catch (InvalidDataException) {
+                    MessageBox.Show("The file contains an invalid cube!\nNew game will start!", "Warning!", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK);
+                    init(currentDifficulty, defaultTitle + "Normal");                    
+                }
+
+                if(c.isUnscrambled()){
+                    MessageBox.Show("The file contains a solved cube!\nNew game will start!", "Warning!", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK);
+                    init(currentDifficulty, defaultTitle + "Normal");
+                }
+            }
         }
     }
 }

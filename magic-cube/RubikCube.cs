@@ -547,8 +547,8 @@ namespace magic_cube {
             return colors[new Tuple<int, int, int>(x, y, z)];
         }
 
-        public void save() {
-            using (StreamWriter f = new StreamWriter("abc")) {
+        public void save(string fileName) {
+            using (StreamWriter f = new StreamWriter(fileName)) {
                 for (int i = 0; i < size * 4; i++) {
                     for (int j = 0; j < size * 3; j++) {
                         f.Write(projection.projection[i, j].ToString() + " ");

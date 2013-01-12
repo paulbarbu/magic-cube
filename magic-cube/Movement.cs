@@ -6,17 +6,13 @@ using System.Diagnostics;
 
 namespace magic_cube {
     public enum Move {
-        //clockwise
         F, R, B, L, U, D,
         M, //Middle: the layer between L and R
         E, //Equator: the layer between U and D
         S, //Standing: the layer between F and B
         None,
-        //counter-clockwise
-        //Sp, Ep, Mp, Dp, Up, Lp, Bp, Rp, Fp//p from prime: '
     }
 
-    //TODO: Extend this to a cube of sizes: 2, 4, 5
     public enum SwipeDirection {
         None,
         H, //horizontal
