@@ -30,6 +30,15 @@ namespace magic_cube {
 
         private Cube2D projection;
         public TimeSpan animationDuration;
+
+        private Dictionary<CubeFace, Material> faceColors = new Dictionary<CubeFace, Material> {
+            {CubeFace.L, new DiffuseMaterial(new SolidColorBrush(Colors.Red))},
+            {CubeFace.D, new DiffuseMaterial(new SolidColorBrush(Colors.Yellow))},
+            {CubeFace.B, new DiffuseMaterial(new SolidColorBrush(Colors.Green))},
+            {CubeFace.R, new DiffuseMaterial(new SolidColorBrush(Colors.Orange))},
+            {CubeFace.U, new DiffuseMaterial(new SolidColorBrush(Colors.White))},
+            {CubeFace.F, new DiffuseMaterial(new SolidColorBrush(Colors.Blue))}
+        };
         
         public RubikCube(Cube2D projection, int size, Point3D o, TimeSpan duration, double len = 1, double space = 0.1) {
             this.size = size;
@@ -348,30 +357,154 @@ namespace magic_cube {
             Dictionary<CubeFace, Material> colors = new Dictionary<CubeFace,Material>();
 
             if (x == 0) {
-                colors.Add(CubeFace.L, new DiffuseMaterial(new SolidColorBrush(Colors.Red)));
+                colors.Add(CubeFace.L, faceColors[CubeFace.L]);
             }
 
             if (y == 0) {
-                colors.Add(CubeFace.D, new DiffuseMaterial(new SolidColorBrush(Colors.Yellow)));
+                colors.Add(CubeFace.D, faceColors[CubeFace.D]);
             }
 
             if (z == 0) {
-                colors.Add(CubeFace.B, new DiffuseMaterial(new SolidColorBrush(Colors.Green)));
+                colors.Add(CubeFace.B, faceColors[CubeFace.B]);
             }
 
             if (x == size-1) {
-                colors.Add(CubeFace.R, new DiffuseMaterial(new SolidColorBrush(Colors.Orange)));
+                colors.Add(CubeFace.R, faceColors[CubeFace.R]);
             }
 
             if (y == size - 1) {
-                colors.Add(CubeFace.U, new DiffuseMaterial(new SolidColorBrush(Colors.White)));
+                colors.Add(CubeFace.U, faceColors[CubeFace.U]);
             }
 
             if (z == size - 1) {
-                colors.Add(CubeFace.F, new DiffuseMaterial(new SolidColorBrush(Colors.Blue)));
+                colors.Add(CubeFace.F, faceColors[CubeFace.F]);
             }
 
             return colors;
+        }
+
+        private Dictionary<CubeFace, Material> setFaceColorsFromProjection(int x, int y, int z, CubeFace[,] p) {
+            Dictionary<Tuple<int, int, int>, Dictionary<CubeFace, Material>> colors = new Dictionary<Tuple<int, int, int>, Dictionary<CubeFace, Material>> {
+                {new Tuple<int, int, int>(0, 0, 0), new Dictionary<CubeFace, Material>{
+                    {CubeFace.L, faceColors[p[3,2]]},
+                    {CubeFace.B, faceColors[p[2,3]]},
+                    {CubeFace.D, faceColors[p[3,3]]},
+                }},
+                {new Tuple<int, int, int>(1, 0, 0), new Dictionary<CubeFace, Material>{
+                    {CubeFace.D, faceColors[p[3,4]]},
+                    {CubeFace.B, faceColors[p[2,4]]},
+                }},
+                {new Tuple<int, int, int>(2, 0, 0), new Dictionary<CubeFace, Material>{
+                    {CubeFace.R, faceColors[p[3,6]]},
+                    {CubeFace.B, faceColors[p[2,5]]},
+                    {CubeFace.D, faceColors[p[3,5]]},
+                }},
+
+                {new Tuple<int, int, int>(0, 0, 1), new Dictionary<CubeFace, Material>{
+                    {CubeFace.L, faceColors[p[4,2]]},
+                    {CubeFace.D, faceColors[p[4,3]]},
+                }},
+                {new Tuple<int, int, int>(1, 0, 1), new Dictionary<CubeFace, Material>{
+                    {CubeFace.D, faceColors[p[4,4]]},
+                }},
+                {new Tuple<int, int, int>(2, 0, 1), new Dictionary<CubeFace, Material>{
+                    {CubeFace.R, faceColors[p[4,5]]},
+                    {CubeFace.D, faceColors[p[4,6]]},
+                }},
+
+                {new Tuple<int, int, int>(0, 0, 2), new Dictionary<CubeFace, Material>{
+                    {CubeFace.L, faceColors[p[5,2]]},
+                    {CubeFace.F, faceColors[p[6,3]]},
+                    {CubeFace.D, faceColors[p[5,3]]},
+                }},
+                {new Tuple<int, int, int>(1, 0, 2), new Dictionary<CubeFace, Material>{
+                    {CubeFace.F, faceColors[p[6,4]]},
+                    {CubeFace.D, faceColors[p[5,4]]},
+                }},
+                {new Tuple<int, int, int>(2, 0, 2), new Dictionary<CubeFace, Material>{
+                    {CubeFace.R, faceColors[p[5,6]]},
+                    {CubeFace.F, faceColors[p[6,5]]},
+                    {CubeFace.D, faceColors[p[5,5]]},
+                }},
+
+                {new Tuple<int, int, int>(0, 1, 0), new Dictionary<CubeFace, Material>{
+                    {CubeFace.L, faceColors[p[3,1]]},
+                    {CubeFace.B, faceColors[p[1,3]]},
+                }},
+                {new Tuple<int, int, int>(1, 1, 0), new Dictionary<CubeFace, Material>{
+                    {CubeFace.B, faceColors[p[1,4]]},
+                }},
+                {new Tuple<int, int, int>(2, 1, 0), new Dictionary<CubeFace, Material>{
+                    {CubeFace.R, faceColors[p[3,7]]},
+                    {CubeFace.B, faceColors[p[1,5]]},
+                }},
+                
+                {new Tuple<int, int, int>(0, 1, 1), new Dictionary<CubeFace, Material>{
+                    {CubeFace.L, faceColors[p[4,1]]},
+                }},/*
+                {new Tuple<int, int, int>(1, 1, 1), new Dictionary<CubeFace, Material>{
+                    {CubeFace.B, faceColors[p[1,4]]}, //empty because we are in the middle of the cube!
+                }},*/
+                {new Tuple<int, int, int>(2, 1, 1), new Dictionary<CubeFace, Material>{
+                    {CubeFace.R, faceColors[p[4,7]]},
+                }},
+                                
+                {new Tuple<int, int, int>(0, 1, 2), new Dictionary<CubeFace, Material>{
+                    {CubeFace.L, faceColors[p[5,1]]},
+                    {CubeFace.F, faceColors[p[7,3]]},
+                }},
+                {new Tuple<int, int, int>(1, 1, 2), new Dictionary<CubeFace, Material>{
+                    {CubeFace.F, faceColors[p[7,4]]},
+                }},
+                {new Tuple<int, int, int>(2, 1, 2), new Dictionary<CubeFace, Material>{
+                    {CubeFace.R, faceColors[p[5,7]]},
+                    {CubeFace.F, faceColors[p[7,5]]},
+                }},
+
+                {new Tuple<int, int, int>(0, 2, 0), new Dictionary<CubeFace, Material>{
+                    {CubeFace.L, faceColors[p[3,0]]},
+                    {CubeFace.B, faceColors[p[0,3]]},
+                    {CubeFace.U, faceColors[p[11,3]]},
+                }},
+                {new Tuple<int, int, int>(1, 2, 0), new Dictionary<CubeFace, Material>{
+                    {CubeFace.U, faceColors[p[11,4]]},
+                    {CubeFace.B, faceColors[p[0,4]]},
+                }},
+                {new Tuple<int, int, int>(2, 2, 0), new Dictionary<CubeFace, Material>{
+                    {CubeFace.R, faceColors[p[3,8]]},
+                    {CubeFace.B, faceColors[p[0,5]]},
+                    {CubeFace.U, faceColors[p[11,5]]},
+                }},
+
+                {new Tuple<int, int, int>(0, 2, 1), new Dictionary<CubeFace, Material>{
+                    {CubeFace.L, faceColors[p[4,0]]},
+                    {CubeFace.U, faceColors[p[10,3]]},
+                }},
+                {new Tuple<int, int, int>(1, 2, 1), new Dictionary<CubeFace, Material>{
+                    {CubeFace.U, faceColors[p[10,4]]},
+                }},
+                {new Tuple<int, int, int>(2, 2, 1), new Dictionary<CubeFace, Material>{
+                    {CubeFace.R, faceColors[p[4,8]]},
+                    {CubeFace.U, faceColors[p[10,5]]},
+                }},
+
+                {new Tuple<int, int, int>(0, 2, 2), new Dictionary<CubeFace, Material>{
+                    {CubeFace.L, faceColors[p[5,0]]},
+                    {CubeFace.F, faceColors[p[8,3]]},
+                    {CubeFace.U, faceColors[p[9,3]]},
+                }},
+                {new Tuple<int, int, int>(1, 2, 2), new Dictionary<CubeFace, Material>{
+                    {CubeFace.U, faceColors[p[9,4]]},
+                    {CubeFace.F, faceColors[p[8,4]]},
+                }},
+                {new Tuple<int, int, int>(2, 2, 2), new Dictionary<CubeFace, Material>{
+                    {CubeFace.R, faceColors[p[5,8]]},
+                    {CubeFace.F, faceColors[p[8,5]]},
+                    {CubeFace.U, faceColors[p[9,5]]},
+                }},
+            };
+
+            return colors[new Tuple<int, int, int>(x, y, z)];
         }
     }
 }
