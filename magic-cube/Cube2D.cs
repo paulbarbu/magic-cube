@@ -29,7 +29,7 @@ namespace magic_cube {
                     try {
                         line = r.ReadLine().Split(' ');
                     }
-                    catch (NullReferenceException e) {
+                    catch (NullReferenceException) {
                         throw new InvalidDataException();
                     }
                     for(int j = 0; j < size * 3; j++){

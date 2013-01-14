@@ -214,7 +214,7 @@ namespace magic_cube {
             try {
                 return directionCount.Where(count => count.Value == 1).First().Key;
             }
-            catch(InvalidOperationException ex){
+            catch(InvalidOperationException){
                 return SwipeDirection.None;
             }
         }

@@ -244,7 +244,7 @@ namespace magic_cube {
 
             ModelVisual3D r1 = new ModelVisual3D();
             ModelVisual3D r2 = new ModelVisual3D();
-
+            
             r1.Content = Helpers.createTriangleModel(p0, p1, p2, m);
             r2.Content = Helpers.createTriangleModel(p0, p2, p3, m);
             
