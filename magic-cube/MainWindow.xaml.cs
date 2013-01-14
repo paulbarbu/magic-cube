@@ -25,8 +25,6 @@ namespace magic_cube {
             InitializeComponent();
         }
 
-        //TODO: implement those different sizes
-
         private enum Difficulty {
             Easy = 10,
             Normal = 20,
@@ -84,7 +82,7 @@ namespace magic_cube {
                 }
                 
                 Debug.Print("Move: {0} {1}", moveList[index].ToString(), direction.ToString());
-                
+
                 moves.Add(new KeyValuePair<Move, RotationDirection>(moveList[index], direction));
                 doneMoves.Add(new KeyValuePair<Move, RotationDirection>(moveList[index], direction));
             }
@@ -174,9 +172,11 @@ namespace magic_cube {
 
         private void Window_ContentRendered(object sender, EventArgs e) {
             init(currentDifficulty, defaultTitle + "Normal");
+            solveMenu.IsEnabled = true;
         }
 
         private void NewGame_Click(object sender, RoutedEventArgs e) {
+            solveMenu.IsEnabled = false;
             string d = ((MenuItem)sender).Tag.ToString();
 
             switch(d){
@@ -200,7 +200,9 @@ namespace magic_cube {
 
         private void Window_KeyUp(object sender, KeyEventArgs e) {
             if (e.Key == Key.F5) {
+                solveMenu.IsEnabled = false;
                 init(currentDifficulty, this.Title);
+                solveMenu.IsEnabled = true;
             }
         }
 
@@ -292,7 +294,6 @@ namespace magic_cube {
             List<KeyValuePair<Move, RotationDirection>> m = new List<KeyValuePair<Move, RotationDirection>>();
 
             for (int i = doneMoves.Count - 1; i >= 0; i--) {
-                //c.rotate(new KeyValuePair<Move, RotationDirection>(doneMoves[i].Key, (RotationDirection)(-1 * (int)doneMoves[i].Value)));
                 m.Add(new KeyValuePair<Move, RotationDirection>(doneMoves[i].Key, (RotationDirection)(-1 * (int)doneMoves[i].Value)));
             }
 
