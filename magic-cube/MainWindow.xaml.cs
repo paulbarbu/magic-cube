@@ -27,7 +27,7 @@ namespace magic_cube {
 
         private enum Difficulty {
             Easy = 10,
-            Normal = 20,
+            Normal = 2,
             Hard = 30,
             VeryHard = 40
         }
@@ -207,6 +207,7 @@ namespace magic_cube {
         }
 
         private void init(Difficulty d, string title, string file=null) {
+            doneMoves.Clear();
             this.mainViewport.Children.Remove(c);
             this.mainViewport.Children.Remove(touchFaces);
             rotations.Children.Clear();
@@ -265,12 +266,12 @@ namespace magic_cube {
         }
 
         private void loadMenu_Click(object sender, RoutedEventArgs e) {
-            //TODO: add the moves for solving
             OpenFileDialog dlg = new OpenFileDialog();
             dlg.DefaultExt = ".rubik";
             dlg.Filter = "Magic Cube Save Files (.rubik)|*.rubik";
 
             if (true == dlg.ShowDialog()) {
+                doneMoves.Clear();
                 solveMenu.IsEnabled = false;
 
                 try {
@@ -301,7 +302,6 @@ namespace magic_cube {
             }
 
             c.rotate(m);
-            doneMoves.Clear();
         }
         
         private void save(string fileName, CubeFace[,] projection, List<KeyValuePair<Move, RotationDirection>> moves) {

@@ -155,7 +155,25 @@ namespace magic_cube {
             return moves;
         }
 
+        private List<KeyValuePair<Move, RotationDirection>> moves;
+        int index;
+
         public void rotate(List<KeyValuePair<Move, RotationDirection>> moves) {
+            index = 0;
+            this.moves = moves;
+
+            animate(index);
+            index++;
+        }
+
+        void animation_Completed(object sender, EventArgs e) {
+                if (index < moves.Count) {
+                    animate(index);
+                    index++;
+                }
+        }
+
+        void animate(int i) {
             Dictionary<Move, CubeFace> dominantFaces = new Dictionary<Move, CubeFace> {
                 {Move.B, CubeFace.R},
                 {Move.D, CubeFace.R},
@@ -170,32 +188,27 @@ namespace magic_cube {
 
             HashSet<Move> possibleMoves = new HashSet<Move>();
             Vector3D axis = new Vector3D();
-            TimeSpan totalDuration = TimeSpan.Zero;
+            double angle = 90 * Convert.ToInt32(moves[i].Value);
+            axis = getRotationAxis(moves[i].Key);
 
-            foreach (var move in moves) {
-                double angle = 90 * Convert.ToInt32(move.Value);
-                axis = getRotationAxis(move.Key);
+            AxisAngleRotation3D rotation = new AxisAngleRotation3D(axis, angle);
+            RotateTransform3D transform = new RotateTransform3D(rotation, new Point3D(0, 0, 0));
 
-                AxisAngleRotation3D rotation = new AxisAngleRotation3D(axis, angle);
-                RotateTransform3D transform = new RotateTransform3D(rotation, new Point3D(0, 0, 0));
+            DoubleAnimation animation = new DoubleAnimation(0, angle, animationDuration);
 
-                DoubleAnimation animation = new DoubleAnimation(0, angle, animationDuration);
-                animation.BeginTime = totalDuration;
+            foreach (Cube c in this.Children) {
+                possibleMoves = new HashSet<Move>(c.possibleMoves);
+                possibleMoves.Remove((Move)dominantFaces[moves[i].Key]);
 
-                foreach (Cube c in this.Children) {
-                    possibleMoves = new HashSet<Move>(c.possibleMoves);
-                    possibleMoves.Remove((Move)dominantFaces[move.Key]);
-                    if (possibleMoves.Contains(move.Key)) {
-                        c.possibleMoves = getNextPossibleMoves(c.possibleMoves, move.Key, move.Value);
-                        c.rotations.Children.Add(transform); rotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, animation);  
-                    }
+                if (possibleMoves.Contains(moves[i].Key)) {
+                    c.possibleMoves = getNextPossibleMoves(c.possibleMoves, moves[i].Key, moves[i].Value);
+                    c.rotations.Children.Add(transform); rotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, animation);
                 }
-
-                rotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, animation);  
-
-                totalDuration += animationDuration;
-                projection.rotate(move);
             }
+
+            animation.Completed += new EventHandler(animation_Completed);
+            rotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, animation);
+            projection.rotate(moves[i]);
         }
 
         public void rotate(KeyValuePair<Move, RotationDirection> move) {
