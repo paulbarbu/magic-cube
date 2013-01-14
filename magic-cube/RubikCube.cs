@@ -170,78 +170,32 @@ namespace magic_cube {
 
             HashSet<Move> possibleMoves = new HashSet<Move>();
             Vector3D axis = new Vector3D();
-
-            Storyboard storyBoard = new Storyboard();
             TimeSpan totalDuration = TimeSpan.Zero;
 
             foreach (var move in moves) {
+                double angle = 90 * Convert.ToInt32(move.Value);
+                axis = getRotationAxis(move.Key);
+
+                AxisAngleRotation3D rotation = new AxisAngleRotation3D(axis, angle);
+                RotateTransform3D transform = new RotateTransform3D(rotation, new Point3D(0, 0, 0));
+
+                DoubleAnimation animation = new DoubleAnimation(0, angle, animationDuration);
+                animation.BeginTime = totalDuration;
+
                 foreach (Cube c in this.Children) {
                     possibleMoves = new HashSet<Move>(c.possibleMoves);
                     possibleMoves.Remove((Move)dominantFaces[move.Key]);
                     if (possibleMoves.Contains(move.Key)) {
-                        switch (move.Key) {
-                            case Move.F:
-                            case Move.S:
-                                axis.X = 0;
-                                axis.Y = 0;
-                                axis.Z = -1;
-                                break;
-                            case Move.R:
-                                axis.X = -1;
-                                axis.Y = 0;
-                                axis.Z = 0;
-                                break;
-                            case Move.B:
-                                axis.X = 0;
-                                axis.Y = 0;
-                                axis.Z = 1;
-                                break;
-                            case Move.L:
-                            case Move.M:
-                                axis.X = 1;
-                                axis.Y = 0;
-                                axis.Z = 0;
-                                break;
-                            case Move.U:
-                                axis.X = 0;
-                                axis.Y = -1;
-                                axis.Z = 0;
-                                break;
-                            case Move.D:
-                            case Move.E:
-                                axis.X = 0;
-                                axis.Y = 1;
-                                axis.Z = 0;
-                                break;
-                        }
-
                         c.possibleMoves = getNextPossibleMoves(c.possibleMoves, move.Key, move.Value);
-
-                        double angle = 90 * Convert.ToInt32(move.Value);
-
-                        AxisAngleRotation3D rotation = new AxisAngleRotation3D(axis, angle);
-                        RotateTransform3D transform = new RotateTransform3D(rotation, new Point3D(0, 0, 0));
-
-                        DoubleAnimation animation = new DoubleAnimation(0, angle, animationDuration);
-                        animation.BeginTime = totalDuration;
-                        totalDuration += animationDuration;
-
-                        Storyboard.SetTarget(animation, rotation);
-                        Storyboard.SetTargetProperty(animation, new PropertyPath(AxisAngleRotation3D.AngleProperty));
-
-                        storyBoard.Children.Add(animation);
-
-                        //rotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, animation);
-                        
-
-                        c.rotations.Children.Add(transform);
+                        c.rotations.Children.Add(transform); rotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, animation);  
                     }
                 }
 
+                rotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, animation);  
+
+                totalDuration += animationDuration;
                 projection.rotate(move);
             }
-
-            storyBoard.Begin();
         }
 
         public void rotate(KeyValuePair<Move, RotationDirection> move) {
@@ -258,108 +212,69 @@ namespace magic_cube {
             };
 
             HashSet<Move> possibleMoves = new HashSet<Move>();
-            Vector3D axis = new Vector3D();
+            Vector3D axis = getRotationAxis(move.Key);
+            
+            double angle = 90 * Convert.ToInt32(move.Value);
 
-            /*int ct = 0;
-            List<Cube> selected = new List<Cube>();*/
+            AxisAngleRotation3D rotation = new AxisAngleRotation3D(axis, angle);
+            RotateTransform3D transform = new RotateTransform3D(rotation, new Point3D(0, 0, 0));
+
+            DoubleAnimation animation = new DoubleAnimation(0, angle, animationDuration);
             
             foreach(Cube c in this.Children){
                 possibleMoves = new HashSet<Move>(c.possibleMoves);
                 possibleMoves.Remove((Move)dominantFaces[move.Key]);
                 if(possibleMoves.Contains(move.Key)){
-                    /*selected.Add(c);
-                    ct++;
-                    foreach (Move m in c.possibleMoves) {
-                        Debug.Write(m.ToString());   
-                    }
-                    Debug.WriteLine("");
-                    */
-                    switch (move.Key) {
-                        case Move.F:
-                        case Move.S:
-                            axis.X = 0;
-                            axis.Y = 0;
-                            axis.Z = -1;
-                            break;
-                        case Move.R:                            
-                            axis.X = -1;
-                            axis.Y = 0;
-                            axis.Z = 0;
-                            break;
-                        case Move.B:
-                            axis.X = 0;
-                            axis.Y = 0;
-                            axis.Z = 1;
-                            break;
-                        case Move.L:
-                        case Move.M:
-                            axis.X = 1;
-                            axis.Y = 0;
-                            axis.Z = 0;
-                            break;
-                        case Move.U:
-                            axis.X = 0;
-                            axis.Y = -1;
-                            axis.Z = 0;
-                            break;
-                        case Move.D:
-                        case Move.E:
-                            axis.X = 0;
-                            axis.Y = 1;
-                            axis.Z = 0;
-                            break;
-                    }
-
                     c.possibleMoves = getNextPossibleMoves(c.possibleMoves, move.Key, move.Value);
-
-                    double angle = 90 * Convert.ToInt32(move.Value);
-
-                    AxisAngleRotation3D rotation = new AxisAngleRotation3D(axis, angle);
-                    RotateTransform3D transform = new RotateTransform3D(rotation, new Point3D(0, 0, 0));
-
-                    DoubleAnimation animation = new DoubleAnimation(0, angle, animationDuration); 
-                    rotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, animation);
 
                     c.rotations.Children.Add(transform);
                 }
             }
 
             projection.rotate(move);
-            //projection.dbg();
-            
-            /*
-            Debug.Print(projection.isUnscrambled().ToString());
-            
-            Debug.Print("No. cubes selected: " + ct);
+            rotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, animation);
+        }
 
-            if(move.Key == Move.S || move.Key == Move.M || move.Key == Move.E){
-                //Debug.Assert(ct == 8);
-                if (ct != 8) {
+        private Vector3D getRotationAxis(Move m){
+            Vector3D axis = new Vector3D();
 
-                    Debug.WriteLine("");
-                    foreach (Cube c in selected) {
-                        foreach (Move i in c.possibleMoves){
-	                            Debug.Write(i.ToString());
-                        }
-                        Debug.WriteLine("");
-                    }
-                    return;
-                }
+             switch (m) {
+                case Move.F:
+                case Move.S:
+                    axis.X = 0;
+                    axis.Y = 0;
+                    axis.Z = -1;
+                    break;
+                case Move.R:
+                    axis.X = -1;
+                    axis.Y = 0;
+                    axis.Z = 0;
+                    break;
+                case Move.B:
+                    axis.X = 0;
+                    axis.Y = 0;
+                    axis.Z = 1;
+                    break;
+                case Move.L:
+                case Move.M:
+                    axis.X = 1;
+                    axis.Y = 0;
+                    axis.Z = 0;
+                    break;
+                case Move.U:
+                    axis.X = 0;
+                    axis.Y = -1;
+                    axis.Z = 0;
+                    break;
+                case Move.D:
+                case Move.E:
+                    axis.X = 0;
+                    axis.Y = 1;
+                    axis.Z = 0;
+                    break;
             }
-            else{
-                //Debug.Assert(ct == 9);
-                if (ct != 9) {
-                    Debug.WriteLine("");
-                    foreach (Cube c in selected) {
-                        foreach (Move i in c.possibleMoves) {
-                            Debug.Write(i.ToString());
-                        }
-                        Debug.WriteLine("");
-                    }
-                    return;
-                }
-            }
-             * */
+
+            return axis;
         }
 
         private HashSet<Move> getNextPossibleMoves(HashSet<Move>moves, Move m, RotationDirection direction){
