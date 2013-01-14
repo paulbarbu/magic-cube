@@ -16,6 +16,7 @@
         <MenuItem Header="Hard" Click="NewGame_Click" Tag="Hard"  />
         <MenuItem Header="Very Hard" Click="NewGame_Click" Tag="Very Hard"  />
     </MenuItem>
+            <MenuItem Header="Solve it!" Name="solveMenu" Click="solveMenu_Click" />
         </Menu>
     <Viewport3D Name="mainViewport" ClipToBounds="True">
     <ModelVisual3D>

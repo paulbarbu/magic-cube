@@ -47,6 +47,8 @@ namespace magic_cube {
         Movement movement = new Movement();
         HashSet<string> touchedFaces = new HashSet<string>();
 
+        List<KeyValuePair<Move, RotationDirection>> doneMoves = new List<KeyValuePair<Move, RotationDirection>>();
+
         string defaultTitle = "Magic Cube - ";
         Difficulty currentDifficulty = Difficulty.Normal;
 
@@ -154,7 +156,8 @@ namespace magic_cube {
             KeyValuePair<Move, RotationDirection> m = movement.getMove();
 
             if (m.Key != Move.None) {
-                c.rotate(m, movement.getDominantFace());
+                c.rotate(m);
+                doneMoves.Add(m);
             }
             else {
                 Debug.Print("Invalid move!");
@@ -192,6 +195,7 @@ namespace magic_cube {
             }
 
             init(currentDifficulty, defaultTitle + d);
+            solveMenu.IsEnabled = true;
         }
 
         private void Window_KeyUp(object sender, KeyEventArgs e) {
@@ -260,6 +264,7 @@ namespace magic_cube {
         }
 
         private void loadMenu_Click(object sender, RoutedEventArgs e) {
+            //TODO: add the moves for solving
             OpenFileDialog dlg = new OpenFileDialog();
             dlg.DefaultExt = ".rubik";
             dlg.Filter = "Magic Cube Save Files (.rubik)|*.rubik";
@@ -278,6 +283,21 @@ namespace magic_cube {
                     init(currentDifficulty, defaultTitle + "Normal");
                 }
             }
+        }
+
+        private void solveMenu_Click(object sender, RoutedEventArgs e) {
+            gameOver = true;
+            solveMenu.IsEnabled = false;
+
+            List<KeyValuePair<Move, RotationDirection>> m = new List<KeyValuePair<Move, RotationDirection>>();
+
+            for (int i = doneMoves.Count - 1; i >= 0; i--) {
+                //c.rotate(new KeyValuePair<Move, RotationDirection>(doneMoves[i].Key, (RotationDirection)(-1 * (int)doneMoves[i].Value)));
+                m.Add(new KeyValuePair<Move, RotationDirection>(doneMoves[i].Key, (RotationDirection)(-1 * (int)doneMoves[i].Value)));
+            }
+
+            c.rotate(m);
+            doneMoves.Clear();
         }
     }
 }
