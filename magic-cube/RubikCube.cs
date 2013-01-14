@@ -32,6 +32,9 @@ namespace magic_cube {
         public Cube2D projection;
         public TimeSpan animationDuration;
 
+        private List<KeyValuePair<Move, RotationDirection>> moves;
+        int index;
+
         private Dictionary<CubeFace, Material> faceColors = new Dictionary<CubeFace, Material> {
             {CubeFace.L, new DiffuseMaterial(new SolidColorBrush(Colors.Red))},
             {CubeFace.D, new DiffuseMaterial(new SolidColorBrush(Colors.Yellow))},
@@ -154,9 +157,6 @@ namespace magic_cube {
 
             return moves;
         }
-
-        private List<KeyValuePair<Move, RotationDirection>> moves;
-        int index;
 
         public void rotate(List<KeyValuePair<Move, RotationDirection>> moves) {
             index = 0;

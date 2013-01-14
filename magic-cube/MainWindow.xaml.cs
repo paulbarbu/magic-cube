@@ -27,7 +27,7 @@ namespace magic_cube {
 
         private enum Difficulty {
             Easy = 10,
-            Normal = 2,
+            Normal = 20,
             Hard = 30,
             VeryHard = 40
         }
@@ -172,11 +172,9 @@ namespace magic_cube {
 
         private void Window_ContentRendered(object sender, EventArgs e) {
             init(currentDifficulty, defaultTitle + "Normal");
-            solveMenu.IsEnabled = true;
         }
 
         private void NewGame_Click(object sender, RoutedEventArgs e) {
-            solveMenu.IsEnabled = false;
             string d = ((MenuItem)sender).Tag.ToString();
 
             switch(d){
@@ -195,22 +193,20 @@ namespace magic_cube {
             }
 
             init(currentDifficulty, defaultTitle + d);
-            solveMenu.IsEnabled = true;
         }
 
         private void Window_KeyUp(object sender, KeyEventArgs e) {
             if (e.Key == Key.F5) {
-                solveMenu.IsEnabled = false;
                 init(currentDifficulty, this.Title);
-                solveMenu.IsEnabled = true;
             }
         }
 
         private void init(Difficulty d, string title, string file=null) {
-            doneMoves.Clear();
             this.mainViewport.Children.Remove(c);
             this.mainViewport.Children.Remove(touchFaces);
             rotations.Children.Clear();
+            doneMoves.Clear();
+            solveMenu.IsEnabled = false;
             
             if (file != null) {
                 c = new RubikCube(readCube(file, out doneMoves), size, new Point3D(-len / 2, -len / 2, -len / 2), TimeSpan.FromMilliseconds(370), edge_len, space);
@@ -240,6 +236,7 @@ namespace magic_cube {
 
             this.Title = title;
             saveMenu.IsEnabled = true;
+            solveMenu.IsEnabled = true;
         }
 
         private void enableAnimations_Checked(object sender, RoutedEventArgs e) {
@@ -271,9 +268,6 @@ namespace magic_cube {
             dlg.Filter = "Magic Cube Save Files (.rubik)|*.rubik";
 
             if (true == dlg.ShowDialog()) {
-                doneMoves.Clear();
-                solveMenu.IsEnabled = false;
-
                 try {
                     init(currentDifficulty, defaultTitle.TrimEnd(new char[] { ' ', '-' }), dlg.FileName);
                 }
@@ -286,8 +280,6 @@ namespace magic_cube {
                     MessageBox.Show("The file contains a solved cube!\nNew game will start!", "Warning!", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK);
                     init(currentDifficulty, defaultTitle + "Normal");
                 }
-
-                solveMenu.IsEnabled = true;
             }
         }
 
