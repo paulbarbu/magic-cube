@@ -16,37 +16,11 @@ namespace magic_cube {
             createCube();
         }
 
-        public Cube2D(int size, string fileName) {
+        public Cube2D(int size, CubeFace[,] c) {
             this.size = size;
-            this.projection = new CubeFace[size * 4, size * 3];
-            readCube(fileName);
-        }
+            this.projection = c;
 
-        private void readCube(string fileName) {
-            using(StreamReader r = new StreamReader(fileName)){
-                for (int i = 0; i < size * 4; i++) {
-                    string[] line = null;
-                    try {
-                        line = r.ReadLine().Split(' ');
-                    }
-                    catch (NullReferenceException) {
-                        throw new InvalidDataException();
-                    }
-                    for(int j = 0; j < size * 3; j++){
-                        try {
-                            projection[i, j] = (CubeFace)Enum.Parse(typeof(CubeFace), line[j]);
-                        }
-                        catch (ArgumentException) {
-                            throw new InvalidDataException();
-                        }
-                        catch (IndexOutOfRangeException) {
-                            throw new InvalidDataException();
-                        }
-                    }
-                }
-            }
-
-            if(!isValidProjection()){                
+            if (!isValidProjection()) {
                 throw new InvalidDataException();
             }
         }

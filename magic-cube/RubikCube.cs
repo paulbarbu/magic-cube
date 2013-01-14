@@ -29,7 +29,7 @@ namespace magic_cube {
         /// </summary>
         private double space;
 
-        private Cube2D projection;
+        public Cube2D projection;
         public TimeSpan animationDuration;
 
         private Dictionary<CubeFace, Material> faceColors = new Dictionary<CubeFace, Material> {
@@ -52,12 +52,12 @@ namespace magic_cube {
             createCube();
         }
 
-        public RubikCube(string fileName, int size, Point3D o, TimeSpan duration, double len = 1, double space = 0.1) {
+        public RubikCube(CubeFace[,] projection, int size, Point3D o, TimeSpan duration, double len = 1, double space = 0.1) {
             this.size = size;
             this.origin = o;
             this.edge_len = len;
             this.space = space;
-            this.projection = new Cube2D(size, fileName);
+            this.projection = new Cube2D(size, projection);
             this.animationDuration = duration;
 
             createCubeFromProjection();
@@ -561,17 +561,6 @@ namespace magic_cube {
             };
 
             return colors[new Tuple<int, int, int>(x, y, z)];
-        }
-
-        public void save(string fileName) {
-            using (StreamWriter f = new StreamWriter(fileName)) {
-                for (int i = 0; i < size * 4; i++) {
-                    for (int j = 0; j < size * 3; j++) {
-                        f.Write(projection.projection[i, j].ToString() + " ");
-                    }
-                    f.WriteLine();
-                }
-            }
         }
     }
 }

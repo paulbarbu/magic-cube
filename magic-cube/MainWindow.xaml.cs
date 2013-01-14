@@ -210,10 +210,9 @@ namespace magic_cube {
             this.mainViewport.Children.Remove(c);
             this.mainViewport.Children.Remove(touchFaces);
             rotations.Children.Clear();
-
-
+            
             if (file != null) {
-                c = new RubikCube(file, size, new Point3D(-len / 2, -len / 2, -len / 2), TimeSpan.FromMilliseconds(370), edge_len, space);
+                c = new RubikCube(readCube(file, out doneMoves), size, new Point3D(-len / 2, -len / 2, -len / 2), TimeSpan.FromMilliseconds(370), edge_len, space);
             }
             else{
                 c = new RubikCube(size, new Point3D(-len / 2, -len / 2, -len / 2), TimeSpan.FromMilliseconds(370), edge_len, space);
@@ -261,7 +260,7 @@ namespace magic_cube {
             dlg.Filter = "Magic Cube Save Files (.rubik)|*.rubik";
 
             if (true == dlg.ShowDialog()) {
-                c.save(dlg.FileName);
+                save(dlg.FileName, c.projection.projection, doneMoves);
             }
         }
 
@@ -272,6 +271,8 @@ namespace magic_cube {
             dlg.Filter = "Magic Cube Save Files (.rubik)|*.rubik";
 
             if (true == dlg.ShowDialog()) {
+                solveMenu.IsEnabled = false;
+
                 try {
                     init(currentDifficulty, defaultTitle.TrimEnd(new char[] { ' ', '-' }), dlg.FileName);
                 }
@@ -284,6 +285,8 @@ namespace magic_cube {
                     MessageBox.Show("The file contains a solved cube!\nNew game will start!", "Warning!", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK);
                     init(currentDifficulty, defaultTitle + "Normal");
                 }
+
+                solveMenu.IsEnabled = true;
             }
         }
 
@@ -299,6 +302,65 @@ namespace magic_cube {
 
             c.rotate(m);
             doneMoves.Clear();
+        }
+        
+        private void save(string fileName, CubeFace[,] projection, List<KeyValuePair<Move, RotationDirection>> moves) {
+            using (StreamWriter f = new StreamWriter(fileName)) {
+                for (int i = 0; i < size * 4; i++) {
+                    for (int j = 0; j < size * 3; j++) {
+                        f.Write(projection[i, j].ToString() + " ");
+                    }
+                    f.WriteLine();
+                }
+
+                foreach (var m in doneMoves) {
+                    f.WriteLine("{0} {1}", m.Key, m.Value);
+                }
+            }
+        }
+
+        private CubeFace[,] readCube(string fileName, out List<KeyValuePair<Move, RotationDirection>> moves) {
+            CubeFace[,] projection = new CubeFace[size * 4, size * 3];
+
+            using (StreamReader r = new StreamReader(fileName)) {
+                for (int i = 0; i < size * 4; i++) {
+                    string[] line = null;
+                    try {
+                        line = r.ReadLine().Split(' ');
+                    }
+                    catch (NullReferenceException) {
+                        throw new InvalidDataException();
+                    }
+                    for (int j = 0; j < size * 3; j++) {
+                        try {
+                            projection[i, j] = (CubeFace)Enum.Parse(typeof(CubeFace), line[j]);
+                        }
+                        catch (ArgumentException) {
+                            throw new InvalidDataException();
+                        }
+                        catch (IndexOutOfRangeException) {
+                            throw new InvalidDataException();
+                        }
+                    }
+                }
+
+                moves = new List<KeyValuePair<Move,RotationDirection>>();
+
+                while(!r.EndOfStream){
+                    string[] line = null;
+                    line = r.ReadLine().Split(' ');
+
+                    try {
+                        moves.Add(new KeyValuePair<Move, RotationDirection>((Move)Enum.Parse(typeof(Move), line[0]),
+                            (RotationDirection)Enum.Parse(typeof(RotationDirection), line[1])));
+                    }
+                    catch (ArgumentException) {
+                        throw new InvalidDataException();
+                    }
+                }
+            }
+
+            return projection;
         }
     }
 }
