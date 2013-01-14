@@ -155,7 +155,108 @@ namespace magic_cube {
             return moves;
         }
 
-        public void rotate(KeyValuePair<Move, RotationDirection> move, CubeFace f) {
+        public void rotate(List<KeyValuePair<Move, RotationDirection>> moves) {
+            Dictionary<Move, CubeFace> dominantFaces = new Dictionary<Move, CubeFace> {
+                {Move.B, CubeFace.R},
+                {Move.D, CubeFace.R},
+                {Move.E, CubeFace.R},
+                {Move.F, CubeFace.R},
+                {Move.L, CubeFace.F},
+                {Move.M, CubeFace.F},
+                {Move.R, CubeFace.F},
+                {Move.S, CubeFace.R},
+                {Move.U, CubeFace.F},
+            };
+
+            HashSet<Move> possibleMoves = new HashSet<Move>();
+            Vector3D axis = new Vector3D();
+
+            Storyboard storyBoard = new Storyboard();
+            TimeSpan totalDuration = TimeSpan.Zero;
+
+            foreach (var move in moves) {
+                foreach (Cube c in this.Children) {
+                    possibleMoves = new HashSet<Move>(c.possibleMoves);
+                    possibleMoves.Remove((Move)dominantFaces[move.Key]);
+                    if (possibleMoves.Contains(move.Key)) {
+                        switch (move.Key) {
+                            case Move.F:
+                            case Move.S:
+                                axis.X = 0;
+                                axis.Y = 0;
+                                axis.Z = -1;
+                                break;
+                            case Move.R:
+                                axis.X = -1;
+                                axis.Y = 0;
+                                axis.Z = 0;
+                                break;
+                            case Move.B:
+                                axis.X = 0;
+                                axis.Y = 0;
+                                axis.Z = 1;
+                                break;
+                            case Move.L:
+                            case Move.M:
+                                axis.X = 1;
+                                axis.Y = 0;
+                                axis.Z = 0;
+                                break;
+                            case Move.U:
+                                axis.X = 0;
+                                axis.Y = -1;
+                                axis.Z = 0;
+                                break;
+                            case Move.D:
+                            case Move.E:
+                                axis.X = 0;
+                                axis.Y = 1;
+                                axis.Z = 0;
+                                break;
+                        }
+
+                        c.possibleMoves = getNextPossibleMoves(c.possibleMoves, move.Key, move.Value);
+
+                        double angle = 90 * Convert.ToInt32(move.Value);
+
+                        AxisAngleRotation3D rotation = new AxisAngleRotation3D(axis, angle);
+                        RotateTransform3D transform = new RotateTransform3D(rotation, new Point3D(0, 0, 0));
+
+                        DoubleAnimation animation = new DoubleAnimation(0, angle, animationDuration);
+                        animation.BeginTime = totalDuration;
+                        totalDuration += animationDuration;
+
+                        Storyboard.SetTarget(animation, rotation);
+                        Storyboard.SetTargetProperty(animation, new PropertyPath(AxisAngleRotation3D.AngleProperty));
+
+                        storyBoard.Children.Add(animation);
+
+                        //rotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, animation);
+                        
+
+                        c.rotations.Children.Add(transform);
+                    }
+                }
+
+                projection.rotate(move);
+            }
+
+            storyBoard.Begin();
+        }
+
+        public void rotate(KeyValuePair<Move, RotationDirection> move) {
+            Dictionary<Move, CubeFace> dominantFaces = new Dictionary<Move, CubeFace> {
+                {Move.B, CubeFace.R},
+                {Move.D, CubeFace.R},
+                {Move.E, CubeFace.R},
+                {Move.F, CubeFace.R},
+                {Move.L, CubeFace.F},
+                {Move.M, CubeFace.F},
+                {Move.R, CubeFace.F},
+                {Move.S, CubeFace.R},
+                {Move.U, CubeFace.F},
+            };
+
             HashSet<Move> possibleMoves = new HashSet<Move>();
             Vector3D axis = new Vector3D();
 
@@ -164,7 +265,7 @@ namespace magic_cube {
             
             foreach(Cube c in this.Children){
                 possibleMoves = new HashSet<Move>(c.possibleMoves);
-                possibleMoves.Remove((Move)f);
+                possibleMoves.Remove((Move)dominantFaces[move.Key]);
                 if(possibleMoves.Contains(move.Key)){
                     /*selected.Add(c);
                     ct++;
