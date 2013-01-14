@@ -68,20 +68,11 @@ namespace magic_cube {
         private void scramble(Difficulty d) {
             Random r = new Random();
             RotationDirection direction;
-            List<KeyValuePair<Move, CubeFace>> moves = new List<KeyValuePair<Move, CubeFace>>{
-                {new KeyValuePair<Move, CubeFace>(Move.B, CubeFace.R)},
-                {new KeyValuePair<Move, CubeFace>(Move.D, CubeFace.R)},
-                {new KeyValuePair<Move, CubeFace>(Move.E, CubeFace.R)},
-                {new KeyValuePair<Move, CubeFace>(Move.F, CubeFace.R)},
-                {new KeyValuePair<Move, CubeFace>(Move.L, CubeFace.F)},
-                {new KeyValuePair<Move, CubeFace>(Move.M, CubeFace.F)},
-                {new KeyValuePair<Move, CubeFace>(Move.R, CubeFace.F)},
-                {new KeyValuePair<Move, CubeFace>(Move.S, CubeFace.R)},
-                {new KeyValuePair<Move, CubeFace>(Move.U, CubeFace.F)},
-            };    
+            List<Move> moveList = new List<Move> {Move.B, Move.D, Move.E, Move.F, Move.L, Move.M, Move.R, Move.S, Move.U};
+            List<KeyValuePair<Move, RotationDirection>> moves = new List<KeyValuePair<Move, RotationDirection>>();
 
             for (int i = 0; i < (int)d; i++ ) {
-                int index = r.Next(0, moves.Count);
+                int index = r.Next(0, moveList.Count);
                                 
                 if (r.Next(0, 101) == 0) {
                     direction = RotationDirection.ClockWise;
@@ -89,10 +80,14 @@ namespace magic_cube {
                 else {
                     direction = RotationDirection.CounterClockWise;
                 }
-
-                Debug.Print("Move: {0} {1}", moves[index].Key.ToString(), direction.ToString());
-                c.rotate(new KeyValuePair<Move, RotationDirection>(moves[index].Key, direction), moves[index].Value);
+                
+                Debug.Print("Move: {0} {1}", moveList[index].ToString(), direction.ToString());
+                
+                moves.Add(new KeyValuePair<Move, RotationDirection>(moveList[index], direction));
+                doneMoves.Add(new KeyValuePair<Move, RotationDirection>(moveList[index], direction));
             }
+
+            c.rotate(moves);
         }
 
         private void Window_MouseRightButtonDown(object sender, MouseButtonEventArgs e) {
