@@ -201,14 +201,14 @@ namespace magic_cube {
             int j = 5;
 
             List<List<int>> substitutions = new List<List<int>> {
-                new List<int>{3, 0, 5, 0},
-                new List<int>{5, 0, 5, 2},
-                new List<int>{5, 2, 3, 2},
-                new List<int>{3, 2, 3, 0},
-                new List<int>{5, 1, 4, 2},
-                new List<int>{4, 2, 3, 1},
-                new List<int>{3, 1, 4, 0},
-                new List<int>{4, 0, 5, 1},
+                new List<int>{3, 8, 5, 8},
+                new List<int>{5, 8, 5, 6},
+                new List<int>{5, 6, 3, 6},
+                new List<int>{3, 6, 3, 8},
+                new List<int>{5, 7, 4, 6},
+                new List<int>{4, 6, 3, 7},
+                new List<int>{3, 7, 4, 8},
+                new List<int>{4, 8, 5, 7},
             };
 
             if (d == RotationDirection.ClockWise) {
