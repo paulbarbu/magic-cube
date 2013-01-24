@@ -24,9 +24,7 @@ namespace magic_cube {
         public MainWindow() {
             InitializeComponent();
         }
-
-        //TODO: I can change the cube while animations are running, this isn't good
-
+        
         private enum Difficulty {
             Easy = 10,
             Normal = 20,
@@ -48,10 +46,13 @@ namespace magic_cube {
         HashSet<string> touchedFaces = new HashSet<string>();
 
         List<KeyValuePair<Move, RotationDirection>> doneMoves = new List<KeyValuePair<Move, RotationDirection>>();
+        InputOutput IO;
         
         private void Window_Loaded(object sender, RoutedEventArgs e) {
             double distanceFactor = 2.3;
             len = edge_len * size + space * (size - 1);
+
+            IO = new InputOutput(size);
             
             Point3D cameraPos = new Point3D(len * distanceFactor, len * distanceFactor, len * distanceFactor);
             PerspectiveCamera camera = new PerspectiveCamera(
@@ -191,7 +192,7 @@ namespace magic_cube {
             solveMenu.IsEnabled = false;
             
             if (file != null) {
-                c = new RubikCube(readCube(file, out doneMoves), size, new Point3D(-len / 2, -len / 2, -len / 2), TimeSpan.FromMilliseconds(370), edge_len, space);
+                c = new RubikCube(IO.read(file, out doneMoves), size, new Point3D(-len / 2, -len / 2, -len / 2), TimeSpan.FromMilliseconds(370), edge_len, space);
             }
             else{
                 c = new RubikCube(size, new Point3D(-len / 2, -len / 2, -len / 2), TimeSpan.FromMilliseconds(370), edge_len, space);
@@ -237,7 +238,7 @@ namespace magic_cube {
             dlg.Filter = "Magic Cube Save Files (.rubik)|*.rubik";
 
             if (true == dlg.ShowDialog()) {
-                save(dlg.FileName, c.projection.projection, doneMoves);
+                IO.save(dlg.FileName, c.projection.projection, doneMoves);
             }
         }
 
@@ -265,6 +266,7 @@ namespace magic_cube {
         private void solveMenu_Click(object sender, RoutedEventArgs e) {
             gameOver = true;
             solveMenu.IsEnabled = false;
+            saveMenu.IsEnabled = false;
 
             List<KeyValuePair<Move, RotationDirection>> m = new List<KeyValuePair<Move, RotationDirection>>();
 
@@ -275,65 +277,6 @@ namespace magic_cube {
             c.rotate(m);
         }
         
-        private void save(string fileName, CubeFace[,] projection, List<KeyValuePair<Move, RotationDirection>> moves) {
-            using (StreamWriter f = new StreamWriter(fileName)) {
-                for (int i = 0; i < size * 4; i++) {
-                    for (int j = 0; j < size * 3; j++) {
-                        f.Write(projection[i, j].ToString() + " ");
-                    }
-                    f.WriteLine();
-                }
-
-                foreach (var m in doneMoves) {
-                    f.WriteLine("{0} {1}", m.Key, m.Value);
-                }
-            }
-        }
-
-        private CubeFace[,] readCube(string fileName, out List<KeyValuePair<Move, RotationDirection>> moves) {
-            CubeFace[,] projection = new CubeFace[size * 4, size * 3];
-
-            using (StreamReader r = new StreamReader(fileName)) {
-                for (int i = 0; i < size * 4; i++) {
-                    string[] line = null;
-                    try {
-                        line = r.ReadLine().Split(' ');
-                    }
-                    catch (NullReferenceException) {
-                        throw new InvalidDataException();
-                    }
-                    for (int j = 0; j < size * 3; j++) {
-                        try {
-                            projection[i, j] = (CubeFace)Enum.Parse(typeof(CubeFace), line[j]);
-                        }
-                        catch (ArgumentException) {
-                            throw new InvalidDataException();
-                        }
-                        catch (IndexOutOfRangeException) {
-                            throw new InvalidDataException();
-                        }
-                    }
-                }
-
-                moves = new List<KeyValuePair<Move,RotationDirection>>();
-
-                while(!r.EndOfStream){
-                    string[] line = null;
-                    line = r.ReadLine().Split(' ');
-
-                    try {
-                        moves.Add(new KeyValuePair<Move, RotationDirection>((Move)Enum.Parse(typeof(Move), line[0]),
-                            (RotationDirection)Enum.Parse(typeof(RotationDirection), line[1])));
-                    }
-                    catch (ArgumentException) {
-                        throw new InvalidDataException();
-                    }
-                }
-            }
-
-            return projection;
-        }
-
         private void newGame_Click(object sender, RoutedEventArgs e) {
             init();
         }

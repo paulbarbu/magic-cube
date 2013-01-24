@@ -56,6 +56,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Cube2D.cs" />
+    <Compile Include="InputOutput.cs" />
     <Compile Include="Movement.cs" />
     <Compile Include="MyModelVisual3D.cs" />
     <Compile Include="RubikCube.cs" />
