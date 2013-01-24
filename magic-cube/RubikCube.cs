@@ -34,6 +34,7 @@ namespace magic_cube {
 
         private List<KeyValuePair<Move, RotationDirection>> moves;
         int index;
+        bool animation_lock = false;
 
         private Dictionary<CubeFace, Material> faceColors = new Dictionary<CubeFace, Material> {
             {CubeFace.L, new DiffuseMaterial(new SolidColorBrush(Colors.Red))},
@@ -159,6 +160,11 @@ namespace magic_cube {
         }
 
         public void rotate(List<KeyValuePair<Move, RotationDirection>> moves) {
+            if (animation_lock) {
+                return;
+            }
+
+            animation_lock = true;
             index = 0;
             this.moves = moves;
 
@@ -167,10 +173,13 @@ namespace magic_cube {
         }
 
         void animation_Completed(object sender, EventArgs e) {
-                if (index < moves.Count) {
-                    animate(index);
-                    index++;
-                }
+            if (index < moves.Count) {
+                animate(index);
+                index++;
+            }
+            else {
+                animation_lock = false;
+            }
         }
 
         void animate(int i) {
@@ -211,7 +220,11 @@ namespace magic_cube {
             projection.rotate(moves[i]);
         }
 
-        public void rotate(KeyValuePair<Move, RotationDirection> move) {
+        public bool rotate(KeyValuePair<Move, RotationDirection> move) {
+            if (animation_lock) {
+                return false;
+            }
+
             Dictionary<Move, CubeFace> dominantFaces = new Dictionary<Move, CubeFace> {
                 {Move.B, CubeFace.R},
                 {Move.D, CubeFace.R},
@@ -246,6 +259,8 @@ namespace magic_cube {
 
             projection.rotate(move);
             rotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, animation);
+
+            return true;
         }
 
         private Vector3D getRotationAxis(Move m){

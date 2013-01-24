@@ -25,6 +25,8 @@ namespace magic_cube {
             InitializeComponent();
         }
 
+        //TODO: I can change the cube while animations are running, this isn't good
+
         private enum Difficulty {
             Easy = 10,
             Normal = 20,
@@ -46,10 +48,7 @@ namespace magic_cube {
         HashSet<string> touchedFaces = new HashSet<string>();
 
         List<KeyValuePair<Move, RotationDirection>> doneMoves = new List<KeyValuePair<Move, RotationDirection>>();
-
-        string defaultTitle = "Magic Cube - ";
-        Difficulty currentDifficulty = Difficulty.Normal;
-
+        
         private void Window_Loaded(object sender, RoutedEventArgs e) {
             double distanceFactor = 2.3;
             len = edge_len * size + space * (size - 1);
@@ -65,13 +64,13 @@ namespace magic_cube {
             this.mainViewport.Camera = camera;
         }
 
-        private void scramble(Difficulty d) {
+        private void scramble(int n) {
             Random r = new Random();
             RotationDirection direction;
             List<Move> moveList = new List<Move> {Move.B, Move.D, Move.E, Move.F, Move.L, Move.M, Move.R, Move.S, Move.U};
             List<KeyValuePair<Move, RotationDirection>> moves = new List<KeyValuePair<Move, RotationDirection>>();
 
-            for (int i = 0; i < (int)d; i++ ) {
+            for (int i = 0; i < n; i++ ) {
                 int index = r.Next(0, moveList.Count);
                                 
                 if (r.Next(0, 101) == 0) {
@@ -154,8 +153,9 @@ namespace magic_cube {
             KeyValuePair<Move, RotationDirection> m = movement.getMove();
 
             if (m.Key != Move.None) {
-                c.rotate(m);
-                doneMoves.Add(m);
+                if (c.rotate(m)) {
+                    doneMoves.Add(m);
+                }
             }
             else {
                 Debug.Print("Invalid move!");
@@ -164,6 +164,7 @@ namespace magic_cube {
             if (c.isUnscrambled()) {                
                 gameOver = true;
                 saveMenu.IsEnabled = false;
+                solveMenu.IsEnabled = false;
                 Debug.Print("!!!!! GAME OVER !!!!!");
             }
 
@@ -171,41 +172,22 @@ namespace magic_cube {
         }
 
         private void Window_ContentRendered(object sender, EventArgs e) {
-            init(currentDifficulty, defaultTitle + "Normal");
-        }
-
-        private void NewGame_Click(object sender, RoutedEventArgs e) {
-            string d = ((MenuItem)sender).Tag.ToString();
-
-            switch(d){
-                case "Easy":
-                    currentDifficulty = Difficulty.Easy;
-                    break;
-                case "Normal":
-                    currentDifficulty = Difficulty.Normal;
-                    break;
-                case "Hard":
-                    currentDifficulty = Difficulty.Hard;
-                    break;
-                case "Very Hard":
-                    currentDifficulty = Difficulty.VeryHard;
-                    break;
-            }
-
-            init(currentDifficulty, defaultTitle + d);
+            init();
         }
 
         private void Window_KeyUp(object sender, KeyEventArgs e) {
             if (e.Key == Key.F5) {
-                init(currentDifficulty, this.Title);
+                init();
             }
         }
 
-        private void init(Difficulty d, string title, string file=null) {
+        private void init(string file=null) {
             this.mainViewport.Children.Remove(c);
             this.mainViewport.Children.Remove(touchFaces);
+
             rotations.Children.Clear();
             doneMoves.Clear();
+
             solveMenu.IsEnabled = false;
             
             if (file != null) {
@@ -223,18 +205,15 @@ namespace magic_cube {
             this.mainViewport.Children.Add(c);
             this.mainViewport.Children.Add(touchFaces);
 
-
             if (!enableAnimations.IsChecked) {
-                c.animationDuration = TimeSpan.FromMilliseconds(0);
+                c.animationDuration = TimeSpan.FromMilliseconds(1);
             }
 
             if (file == null) {
-                scramble(d);
+                scramble(25);
             }
 
             gameOver = false;
-
-            this.Title = title;
             saveMenu.IsEnabled = true;
             solveMenu.IsEnabled = true;
         }
@@ -247,7 +226,7 @@ namespace magic_cube {
 
         private void enableAnimations_Unchecked(object sender, RoutedEventArgs e) {
             if (c != null) {
-                c.animationDuration = TimeSpan.FromMilliseconds(0);
+                c.animationDuration = TimeSpan.FromMilliseconds(1);
             }
         }
 
@@ -269,16 +248,16 @@ namespace magic_cube {
 
             if (true == dlg.ShowDialog()) {
                 try {
-                    init(currentDifficulty, defaultTitle.TrimEnd(new char[] { ' ', '-' }), dlg.FileName);
+                    init(dlg.FileName);
                 }
                 catch (InvalidDataException) {
                     MessageBox.Show("The file contains an invalid cube!\nNew game will start!", "Warning!", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK);
-                    init(currentDifficulty, defaultTitle + "Normal");                    
+                    init();                    
                 }
 
                 if(c.isUnscrambled()){
                     MessageBox.Show("The file contains a solved cube!\nNew game will start!", "Warning!", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK);
-                    init(currentDifficulty, defaultTitle + "Normal");
+                    init();
                 }
             }
         }
@@ -353,6 +332,10 @@ namespace magic_cube {
             }
 
             return projection;
+        }
+
+        private void newGame_Click(object sender, RoutedEventArgs e) {
+            init();
         }
     }
 }

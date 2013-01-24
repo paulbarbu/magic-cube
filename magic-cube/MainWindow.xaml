@@ -10,12 +10,8 @@
             <MenuItem Header="Save" Name="saveMenu" Click="saveMenu_Click" />
             <MenuItem Header="Load" Name="loadMenu" Click="loadMenu_Click" />
         </MenuItem>
-        <MenuItem Header="_New Game">
-        <MenuItem Header="Easy" Click="NewGame_Click" Tag="Easy" />
-        <MenuItem Header="Normal" Click="NewGame_Click" Tag="Normal" />
-        <MenuItem Header="Hard" Click="NewGame_Click" Tag="Hard"  />
-        <MenuItem Header="Very Hard" Click="NewGame_Click" Tag="Very Hard"  />
-    </MenuItem>
+            <MenuItem Header="_New Game" Click="newGame_Click" Name="newGame">
+            </MenuItem>
             <MenuItem Header="Solve it!" Name="solveMenu" Click="solveMenu_Click" IsEnabled="False" />
         </Menu>
     <Viewport3D Name="mainViewport" ClipToBounds="True">
